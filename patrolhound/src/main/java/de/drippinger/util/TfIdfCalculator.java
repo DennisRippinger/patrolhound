@@ -18,10 +18,10 @@
 //@Stateless
 //public class TfIdfCalculator {
 //
-//	@Inject
+//	@Resource
 //	private transient JobOfferDao jobOfferDao;
 //
-//	@Inject
+//	@Resource
 //	private transient CompanyDao companyDao;
 //
 //	public void calculateTfIDForCompany(Company company) {

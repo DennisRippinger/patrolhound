@@ -5,14 +5,14 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import de.drippinger.crawler.CrawlerUtil;
 import de.drippinger.crawler.JobCrawler;
-import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
+import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.util.LevenshteinDistance;
 import lombok.extern.slf4j.Slf4j;
-import ro.isdc.wro.model.group.Inject;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,10 +24,10 @@ public class MonsterCrawler extends JobCrawler {
 
 	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
 
-	@Inject
+	@Resource
 	private JobOfferRepository jobOfferRepository;
 
-	@Inject
+	@Resource
 	private LevenshteinDistance levenshteinDistance;
 
 	private MonsterJobPageCrawler monsterJobPageCrawler;

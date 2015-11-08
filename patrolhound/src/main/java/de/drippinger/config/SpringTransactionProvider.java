@@ -8,6 +8,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import javax.annotation.Resource;
+
 import static org.springframework.transaction.TransactionDefinition.PROPAGATION_NESTED;
 
 
@@ -21,7 +23,7 @@ public class SpringTransactionProvider implements TransactionProvider {
 
 	private static final JooqLogger log = JooqLogger.getLogger(SpringTransactionProvider.class);
 
-	@Autowired
+	@Resource
 	DataSourceTransactionManager txMgr;
 
 	@Override
