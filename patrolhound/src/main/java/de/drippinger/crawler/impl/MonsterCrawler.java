@@ -11,6 +11,7 @@ import de.drippinger.exception.CrawlerException;
 import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.util.LevenshteinDistance;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
 public class MonsterCrawler extends JobCrawler {
 
 	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
@@ -39,8 +41,7 @@ public class MonsterCrawler extends JobCrawler {
 
 		monsterJobPageCrawler = new MonsterJobPageCrawler();
 
-		//List<JobOffer> jobOffers = jobOfferDao.findAllNonObsolete();
-		List<JobOffer> jobOffers = null;
+		List<JobOffer> jobOffers = jobOfferRepository.findAllNonObsolete();
 		List<JobOffer> knownJobOffers = new ArrayList<>();
 
 		WebClient webClient = CrawlerUtil.getRandomDesktopWebClient(false, false);
@@ -69,7 +70,7 @@ public class MonsterCrawler extends JobCrawler {
 
 		// Uncheck no longer listed job offers
 		jobOffers.removeAll(knownJobOffers);
-		//jobOffers.forEach(jobOfferDao::makeObsolete);
+		jobOffers.forEach(jobOfferRepository::makeObsolete);
 		log.info("Unchecked {} no longer listed jobs", jobOffers.size());
 	}
 
@@ -97,6 +98,7 @@ public class MonsterCrawler extends JobCrawler {
 			jobOffer.setJobUrl(jobURL);
 			jobOffer.setCompanyName(companyName);
 			jobOffer.setJobAnnouncementTime(Timestamp.valueOf(jobAnnouncementTime));
+			jobOffer.setObsolete(false);
 
 			Boolean isKnown = isKnown(jobOffers, knownJobOffers, jobOffer);
 
@@ -104,7 +106,7 @@ public class MonsterCrawler extends JobCrawler {
 
 				getJobDescription(jobOffer, webClient);
 
-				//jobOfferDao.save(jobOffer);
+				jobOfferRepository.save(jobOffer);
 				log.info("Saved new Job Offer {}", jobOffer.getJobTitle());
 			}
 
@@ -115,7 +117,7 @@ public class MonsterCrawler extends JobCrawler {
 		monsterJobPageCrawler.crawlJobOffer(jobOffer, webClient);
 	}
 
-	public Boolean isKnown(List<JobOffer> jobOffers, List<JobOffer> knownJobs, JobOffer currentJob) {
+	private Boolean isKnown(List<JobOffer> jobOffers, List<JobOffer> knownJobs, JobOffer currentJob) {
 		for (JobOffer jobOffer : jobOffers) {
 			if (jobOffer.getJobIdHash() == currentJob.getJobIdHash()) {
 				knownJobs.add(jobOffer);
