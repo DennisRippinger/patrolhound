@@ -1,7 +1,7 @@
 //package de.drippinger.util;
 //
-//import com.msg.gbl.laboro.dao.CompanyDao;
-//import com.msg.gbl.laboro.dao.JobOfferDao;
+//import com.msg.gbl.laboro.repository.CompanyDao;
+//import com.msg.gbl.laboro.repository.JobOfferDao;
 //import com.msg.gbl.laboro.dto.Company;
 //import com.msg.gbl.laboro.dto.JobOffer;
 //import lombok.extern.slf4j.Slf4j;

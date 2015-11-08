@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import de.drippinger.crawler.CrawlerUtil;
 import de.drippinger.crawler.JobCrawler;
-import de.drippinger.dao.JobOfferDao;
+import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
@@ -25,7 +25,7 @@ public class MonsterCrawler extends JobCrawler {
 	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
 
 	@Inject
-	private JobOfferDao jobOfferDao;
+	private JobOfferRepository jobOfferRepository;
 
 	@Inject
 	private LevenshteinDistance levenshteinDistance;

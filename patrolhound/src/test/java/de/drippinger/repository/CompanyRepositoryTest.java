@@ -1,4 +1,4 @@
-package de.drippinger.dao;
+package de.drippinger.repository;
 
 import de.drippinger.PatrolHound;
 import de.drippinger.dto.Company;
