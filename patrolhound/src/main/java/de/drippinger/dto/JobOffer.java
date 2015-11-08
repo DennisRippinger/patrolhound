@@ -1,37 +1,36 @@
 package de.drippinger.dto;
 
+import de.drippinger.generated.tables.interfaces.IJobOffer;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 
 @Data
-public class JobOffer {
+public class JobOffer implements IJobOffer {
 
 	private Long id;
 
 	private Long companyId;
 
-	private String jobID;
+	private String jobId;
 
-	private int jobIDHash;
+	private Integer jobIdHash;
 
-	private String jobURL;
+	private String jobUrl;
 
 	private String jobTitle;
 
 	private String companyName;
 
-	private LocalDateTime jobAnnouncementTime;
+	private Timestamp jobAnnouncementTime;
 
 	private String description;
 
-	private boolean obsolete;
-
+	private Boolean obsolete;
 
 	public void setJobID(String jobID) {
-		this.jobID = jobID;
-		jobIDHash = jobID.hashCode();
+		this.jobId = jobID;
+		jobIdHash = jobID.hashCode();
 	}
-
 }

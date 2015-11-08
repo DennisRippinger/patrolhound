@@ -1,7 +1,5 @@
 package de.drippinger.util;
 
-import javax.ejb.Stateless;
-
 /**
  * Calculates the Levenshtein Distance for two Strings. This measurement is suitable for small changes in individual sentences,
  * i.e. typing errors.
@@ -9,7 +7,6 @@ import javax.ejb.Stateless;
  * @author Dennis Rippinger
  * @see http://en.wikipedia.org/wiki/Levenshtein_distance
  */
-@Stateless
 public class LevenshteinDistance {
 
 	/**

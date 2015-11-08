@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import de.drippinger.crawler.CrawlerUtil;
 import de.drippinger.crawler.JobCrawler;
+import de.drippinger.dao.JobOfferDao;
 import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
@@ -12,6 +13,7 @@ import de.drippinger.util.LevenshteinDistance;
 import lombok.extern.slf4j.Slf4j;
 import ro.isdc.wro.model.group.Inject;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -37,7 +39,8 @@ public class MonsterCrawler extends JobCrawler {
 
 		monsterJobPageCrawler = new MonsterJobPageCrawler();
 
-		List<JobOffer> jobOffers = jobOfferDao.findAllNonObsolete();
+		//List<JobOffer> jobOffers = jobOfferDao.findAllNonObsolete();
+		List<JobOffer> jobOffers = null;
 		List<JobOffer> knownJobOffers = new ArrayList<>();
 
 		WebClient webClient = CrawlerUtil.getRandomDesktopWebClient(false, false);
@@ -66,9 +69,8 @@ public class MonsterCrawler extends JobCrawler {
 
 		// Uncheck no longer listed job offers
 		jobOffers.removeAll(knownJobOffers);
-		jobOffers.forEach(jobOfferDao::makeObsolete);
+		//jobOffers.forEach(jobOfferDao::makeObsolete);
 		log.info("Unchecked {} no longer listed jobs", jobOffers.size());
-
 	}
 
 	private boolean hasNext(HtmlPage monsterPage) {
@@ -92,9 +94,9 @@ public class MonsterCrawler extends JobCrawler {
 			jobOffer.setJobID(jobID);
 			jobOffer.setCompanyId(company.getId());
 			jobOffer.setJobTitle(jobTitle);
-			jobOffer.setJobURL(jobURL);
+			jobOffer.setJobUrl(jobURL);
 			jobOffer.setCompanyName(companyName);
-			jobOffer.setJobAnnouncementTime(jobAnnouncementTime);
+			jobOffer.setJobAnnouncementTime(Timestamp.valueOf(jobAnnouncementTime));
 
 			Boolean isKnown = isKnown(jobOffers, knownJobOffers, jobOffer);
 
@@ -102,7 +104,7 @@ public class MonsterCrawler extends JobCrawler {
 
 				getJobDescription(jobOffer, webClient);
 
-				jobOfferDao.save(jobOffer);
+				//jobOfferDao.save(jobOffer);
 				log.info("Saved new Job Offer {}", jobOffer.getJobTitle());
 			}
 
@@ -115,11 +117,11 @@ public class MonsterCrawler extends JobCrawler {
 
 	public Boolean isKnown(List<JobOffer> jobOffers, List<JobOffer> knownJobs, JobOffer currentJob) {
 		for (JobOffer jobOffer : jobOffers) {
-			if (jobOffer.getJobIDHash() == currentJob.getJobIDHash()) {
+			if (jobOffer.getJobIdHash() == currentJob.getJobIdHash()) {
 				knownJobs.add(jobOffer);
 				return true;
 				// TODO Evaluate usefulness later
-			} else if (levenshteinDistance.calculateSimilarity(jobOffer.getJobID(), currentJob.getJobID()) < 2) {
+			} else if (levenshteinDistance.calculateSimilarity(jobOffer.getJobId(), currentJob.getJobId()) < 2) {
 				return true;
 			}
 		}

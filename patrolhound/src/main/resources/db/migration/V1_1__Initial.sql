@@ -23,17 +23,16 @@ CREATE TABLE "COMPANY"
 
 CREATE TABLE "JOB_OFFER"
 (
-  "ID"                     BIGINT DEFAULT nextval('SEQ_JOB_OFFER') NOT NULL,
-  "COMPANY_ID"             BIGINT,
-  "COMPANY_NAME"           CHARACTER VARYING(255),
-  "DESCRIPTION"            TEXT,
-  "JOB_ANNCOUNCEMENT_TIME" TIME,
-  "JOB_ID"                 TEXT,
-  "JOB_ID_HASH"            INTEGER                                 NOT NULL,
-  "JOB_TITLE"              CHARACTER VARYING(255),
-  "JOB_URL"                CHARACTER VARYING(255),
-  "OBSOLETE"               BOOLEAN                                 NOT NULL,
-  "JOB_PAGE"               INTEGER, -- Integer for Enum
+  "ID"                    BIGINT DEFAULT nextval('SEQ_JOB_OFFER') NOT NULL,
+  "COMPANY_ID"            BIGINT,
+  "COMPANY_NAME"          CHARACTER VARYING(255),
+  "DESCRIPTION"           TEXT,
+  "JOB_ANNOUNCEMENT_TIME" TIMESTAMP,
+  "JOB_ID"                TEXT,
+  "JOB_ID_HASH"           INTEGER                                 NOT NULL,
+  "JOB_TITLE"             CHARACTER VARYING(255),
+  "JOB_URL"               CHARACTER VARYING(255),
+  "OBSOLETE"              BOOLEAN                                 NOT NULL,
 
   CONSTRAINT JOB_OFFER_PKEY PRIMARY KEY ("ID")
 );

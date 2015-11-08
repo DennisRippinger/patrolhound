@@ -1,5 +1,6 @@
 package de.drippinger.dto;
 
+import de.drippinger.generated.tables.interfaces.ICompany;
 import lombok.Data;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
  * Created by dennisrippinger on 10.06.15.
  */
 @Data
-public class Company {
+public class Company implements ICompany {
 
 	private Long id;
 

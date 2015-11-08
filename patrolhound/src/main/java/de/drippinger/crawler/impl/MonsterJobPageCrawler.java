@@ -15,7 +15,7 @@ public class MonsterJobPageCrawler {
 	public void crawlJobOffer(JobOffer jobOffer, WebClient webClient) {
 
 		try {
-			HtmlPage webPage = CrawlerUtil.getWebPage(webClient, jobOffer.getJobURL(), 0);
+			HtmlPage webPage = CrawlerUtil.getWebPage(webClient, jobOffer.getJobUrl(), 0);
 
 			DomElement domJobOffer = webPage.getFirstByXPath("//div[@id='monsterAppliesContentHolder']");
 

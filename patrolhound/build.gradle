@@ -12,7 +12,10 @@ repositories {
     mavenCentral()
 }
 
+ext.springVersion = '4.0.0.RELEASE'
+
 dependencies {
+
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.4'
     provided group: 'org.projectlombok', name: 'lombok', version: '1.16.4'
 
@@ -20,13 +23,16 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
 
     compile("org.springframework.boot:spring-boot-starter-web:1.2.7.RELEASE")
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '4.1.8.RELEASE'
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.0.1'
+    compile('org.postgresql:postgresql:9.4-1205-jdbc42')
 
     compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.16'
 
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.5'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
 
-    compile group: 'org.jooq', name: 'jooq', version: '3.6.2'
+    compile group: 'org.jooq', name: 'jooq', version: '3.7.0'
     compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.2.1'
 
     compile group: 'ro.isdc.wro4j', name: 'wro4j-core', version: '1.7.8'
@@ -36,5 +42,69 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.0.0'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '2.0.2-beta'
+    testCompile group: 'org.springframework', name: 'spring-test', version: '4.1.8.RELEASE'
 
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'nu.studer:gradle-jooq-plugin:1.0.5'
+        classpath 'org.postgresql:postgresql:9.4-1205-jdbc42'
+    }
+}
+apply plugin: 'nu.studer.jooq'
+
+jooq {
+    sample(sourceSets.main) {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            url = 'jdbc:postgresql://localhost:5432/patrolhound'
+            user = datasource_username
+            password = datasource_password
+            schema = 'public'
+        }
+        generator {
+            name = 'org.jooq.util.DefaultGenerator'
+            strategy {
+                name = 'org.jooq.util.DefaultGeneratorStrategy'
+            }
+            database {
+                name = 'org.jooq.util.postgres.PostgresDatabase'
+                inputSchema = 'public'
+            }
+            generate {
+                relations = true
+                records = true
+                fluentSetters = true
+                immutablePojos = true
+                interfaces = true
+            }
+            target {
+                packageName = 'de.drippinger.generated'
+                directory = 'src/main/generated-src'
+            }
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.postgresql:postgresql:9.4-1205-jdbc42'
+        classpath 'org.flywaydb:flyway-gradle-plugin:3.2.1'
+    }
+}
+
+apply plugin: 'org.flywaydb.flyway'
+apply plugin: 'java'
+
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/patrolhound'
+    user = datasource_username
+    password = datasource_password
 }
