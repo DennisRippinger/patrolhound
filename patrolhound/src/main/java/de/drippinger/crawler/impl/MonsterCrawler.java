@@ -10,7 +10,7 @@ import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
 import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.util.LevenshteinDistance;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,11 +20,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
 public class MonsterCrawler extends JobCrawler {
 
 	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(MonsterCrawler.class);
 
 	@Resource
 	private JobOfferRepository jobOfferRepository;

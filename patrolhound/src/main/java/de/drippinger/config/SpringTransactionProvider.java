@@ -3,7 +3,6 @@ package de.drippinger.config;
 import org.jooq.TransactionContext;
 import org.jooq.TransactionProvider;
 import org.jooq.tools.JooqLogger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;

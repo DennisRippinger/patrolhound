@@ -1,10 +1,6 @@
 package de.drippinger.config;
 
-import org.jooq.ConnectionProvider;
-import org.jooq.DSLContext;
-import org.jooq.ExecuteListenerProvider;
-import org.jooq.SQLDialect;
-import org.jooq.TransactionProvider;
+import org.jooq.*;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
@@ -22,44 +18,44 @@ import javax.sql.DataSource;
 @Configuration
 public class JooqSpringBootConfiguration {
 
-    @Bean
-    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
+	@Bean
+	public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
+	}
 
-    @Bean
-    public DSLContext dsl(org.jooq.Configuration config) {
-        return new DefaultDSLContext(config);
-    }
+	@Bean
+	public DSLContext dsl(org.jooq.Configuration config) {
+		return new DefaultDSLContext(config);
+	}
 
-    @Bean
-    public ConnectionProvider connectionProvider(DataSource dataSource) {
-        return new DataSourceConnectionProvider(new TransactionAwareDataSourceProxy(dataSource));
-    }
+	@Bean
+	public ConnectionProvider connectionProvider(DataSource dataSource) {
+		return new DataSourceConnectionProvider(new TransactionAwareDataSourceProxy(dataSource));
+	}
 
-    @Bean
-    public TransactionProvider transactionProvider() {
-        return new SpringTransactionProvider();
-    }
+	@Bean
+	public TransactionProvider transactionProvider() {
+		return new SpringTransactionProvider();
+	}
 
-    @Bean
-    public ExceptionTranslator exceptionTranslator() {
-        return new ExceptionTranslator();
-    }
+	@Bean
+	public ExceptionTranslator exceptionTranslator() {
+		return new ExceptionTranslator();
+	}
 
-    @Bean
-    public ExecuteListenerProvider executeListenerProvider(ExceptionTranslator exceptionTranslator) {
-        return new DefaultExecuteListenerProvider(exceptionTranslator);
-    }
+	@Bean
+	public ExecuteListenerProvider executeListenerProvider(ExceptionTranslator exceptionTranslator) {
+		return new DefaultExecuteListenerProvider(exceptionTranslator);
+	}
 
-    @Bean
-    public org.jooq.Configuration jooqConfig(ConnectionProvider connectionProvider,
-                                             TransactionProvider transactionProvider, ExecuteListenerProvider executeListenerProvider) {
+	@Bean
+	public org.jooq.Configuration jooqConfig(ConnectionProvider connectionProvider,
+																					 TransactionProvider transactionProvider, ExecuteListenerProvider executeListenerProvider) {
 
-        return new DefaultConfiguration() //
-                .derive(connectionProvider) //
-                .derive(transactionProvider) //
-                .derive(executeListenerProvider) //
-                .derive(SQLDialect.H2);
-    }
+		return new DefaultConfiguration() //
+			.derive(connectionProvider) //
+			.derive(transactionProvider) //
+			.derive(executeListenerProvider) //
+			.derive(SQLDialect.H2);
+	}
 }

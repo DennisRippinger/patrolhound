@@ -6,8 +6,8 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import de.drippinger.exception.CrawlerException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
  *
  * @author Dennis Rippinger
  */
-@Slf4j
 public final class CrawlerUtil {
 
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(CrawlerUtil.class);
 	private static List<BrowserVersion> browserVersionDesktop = new LinkedList<>();
 
 	static {

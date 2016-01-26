@@ -19,17 +19,17 @@ public class JobOfferRepository {
 
 	public List<JobOffer> findAllNonObsolete() {
 		List<JobOffer> result = jooq.select()
-				.from(JOB_OFFER)
-				.where(JOB_OFFER.OBSOLETE.eq(false))
-				.fetchInto(JobOffer.class);
+			.from(JOB_OFFER)
+			.where(JOB_OFFER.OBSOLETE.eq(false))
+			.fetchInto(JobOffer.class);
 
 		return result;
 	}
 
 	public void makeObsolete(JobOffer jobOffer) {
 		jooq.update(JOB_OFFER)
-				.set(JOB_OFFER.OBSOLETE, true)
-				.where(JOB_OFFER.ID.eq(jobOffer.getId()));
+			.set(JOB_OFFER.OBSOLETE, true)
+			.where(JOB_OFFER.ID.eq(jobOffer.getId()));
 	}
 
 	public List<JobOffer> findAll() {

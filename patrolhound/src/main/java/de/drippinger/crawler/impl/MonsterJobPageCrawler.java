@@ -6,11 +6,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import de.drippinger.crawler.CrawlerUtil;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 
-@Slf4j
 public class MonsterJobPageCrawler {
+
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(MonsterJobPageCrawler.class);
 
 	public void crawlJobOffer(JobOffer jobOffer, WebClient webClient) {
 

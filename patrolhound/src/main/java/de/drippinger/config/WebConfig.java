@@ -1,36 +1,17 @@
 package de.drippinger.config;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * WebConfig
- *
- * @author Dennis Rippinger
- */
+import javax.faces.webapp.FacesServlet;
+
 @Configuration
-@EnableAutoConfiguration
 public class WebConfig {
 
-//	@Bean
-//	public FacesServlet facesServlet() {
-//		return new FacesServlet();
-//	}
-//
-//	@Bean
-//	public ServletRegistrationBean facesServletRegistration() {
-//		ServletRegistrationBean registration = new ServletRegistrationBean(
-//				facesServlet(), "*.xhtml");
-//		registration.setName("FacesServlet");
-//		return registration;
-//	}
-//
-//	@Bean
-//	public ServletListenerRegistrationBean<ConfigureListener> jsfConfigureListener() {
-//		return new ServletListenerRegistrationBean<ConfigureListener>(
-//				new ConfigureListener());
-//	}
-
+	@Bean
+	public ServletRegistrationBean servletRegistrationBean() {
+		FacesServlet servlet = new FacesServlet();
+		return new ServletRegistrationBean(servlet, "*.xhtml");
+	}
 }

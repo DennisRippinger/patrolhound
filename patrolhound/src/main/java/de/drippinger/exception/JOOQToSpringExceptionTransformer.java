@@ -21,8 +21,8 @@ public class JOOQToSpringExceptionTransformer extends DefaultExecuteListener {
 	public void exception(ExecuteContext ctx) {
 		SQLDialect dialect = ctx.configuration().dialect();
 		SQLExceptionTranslator translator = (dialect != null)
-				? new SQLErrorCodeSQLExceptionTranslator(dialect.name())
-				: new SQLStateSQLExceptionTranslator();
+			? new SQLErrorCodeSQLExceptionTranslator(dialect.name())
+			: new SQLStateSQLExceptionTranslator();
 
 		ctx.exception(translator.translate("jOOQ", ctx.sql(), ctx.sqlException()));
 	}

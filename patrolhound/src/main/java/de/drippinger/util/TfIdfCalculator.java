@@ -4,7 +4,7 @@ import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,10 +12,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-@Slf4j
 @Service
 public class TfIdfCalculator {
 
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(TfIdfCalculator.class);
 	@Resource
 	private transient JobOfferRepository jobOfferRepository;
 
@@ -30,7 +30,7 @@ public class TfIdfCalculator {
 		Map<String, Double> tfidfMap = new HashMap<>();
 
 		List<JobOffer> companyJobOffers = jobOfferList.stream().filter(x -> x.getCompanyId().equals(company.getId())).collect(
-				Collectors.toList());
+			Collectors.toList());
 
 		getAllJobOffersWordList(jobOfferList, allWordList);
 
@@ -87,9 +87,9 @@ public class TfIdfCalculator {
 	}
 
 	// From http://stackoverflow.com/a/2581754/769114
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+	private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
 		List<Map.Entry<K, V>> list =
-				new LinkedList<>(map.entrySet());
+			new LinkedList<>(map.entrySet());
 		Collections.sort(list, (o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
 
 		Map<K, V> result = new LinkedHashMap<>();

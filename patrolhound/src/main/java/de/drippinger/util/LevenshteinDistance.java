@@ -19,7 +19,7 @@ public class LevenshteinDistance {
 	 * Code from: http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/ Levenshtein_distance#Java
 	 */
 	public Double calculateSimilarity(String corpusFirst,
-									  String corpusSecond) {
+																		String corpusSecond) {
 
 		Integer len0 = corpusFirst.length() + 1;
 		Integer len1 = corpusSecond.length() + 1;
@@ -43,7 +43,7 @@ public class LevenshteinDistance {
 
 				// matching current letters in both strings
 				Integer match = (corpusFirst.charAt(i - 1) == corpusSecond
-						.charAt(j - 1)) ? 0 : 1;
+					.charAt(j - 1)) ? 0 : 1;
 
 				// computing cost for each transformation
 				Integer costReplace = cost[i - 1] + match;
@@ -52,7 +52,7 @@ public class LevenshteinDistance {
 
 				// keep minimum cost
 				newcost[i] = Math.min(Math.min(costInsert, costDelete),
-						costReplace);
+					costReplace);
 			}
 
 			// swap cost/newcost arrays

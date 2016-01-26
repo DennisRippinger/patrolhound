@@ -9,7 +9,7 @@
 
     <logger name="de.drippinger" level="ALL"/>
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 
