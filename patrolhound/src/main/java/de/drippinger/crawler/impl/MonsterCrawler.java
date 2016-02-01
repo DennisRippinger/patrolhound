@@ -92,7 +92,7 @@ public class MonsterCrawler extends JobCrawler {
 
 
 			JobOffer jobOffer = new JobOffer();
-			jobOffer.setJobID(jobID);
+			jobOffer.setJobId(jobID);
 			jobOffer.setCompanyId(company.getId());
 			jobOffer.setJobTitle(jobTitle);
 			jobOffer.setJobUrl(jobURL);

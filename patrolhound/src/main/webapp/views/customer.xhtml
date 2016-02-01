@@ -1,0 +1,150 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/master.xhtml">
+
+    <ui:param name="parentId" value="customer"/>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{companyAction.customerID}"/>
+        <f:viewAction action="#{companyAction.loadCurrentCompany()}"/>
+    </f:metadata>
+
+
+    <ui:define name="content">
+
+        <form jsf:id="form" class="form-horizontal">
+
+            <div class="form-group">
+                <label jsf:for="name" class="col-sm-2 control-label">#{messages['company.name']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="name" type="text" placeholder="#{messages['company.name.placeholder']}"
+                           class="form-control"
+                           value="#{companyAction.company.name}" data-required="true"/>
+                    <h:message for="name" styleClass="warning"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label jsf:for="crawlerName" class="col-sm-2 control-label">#{messages['company.crawler']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="crawlerName"
+                           type="text"
+                           placeholder="#{messages['company.crawler.placeholder']}"
+                           class="form-control"
+                           jsf:value="#{companyAction.company.crawlerName}"/>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label jsf:for="street" class="col-sm-2 control-label">#{messages['company.street']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="street" type="text" placeholder="#{messages['company.street.placeholder']}"
+                           class="form-control"
+                           jsf:value="#{companyAction.company.street}"/>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label jsf:for="locationCode" class="col-sm-2 control-label">#{messages['company.locationCode']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="locationCode" type="text"
+                           placeholder="#{messages['company.locationCode.placeholder']}"
+                           class="form-control"
+                           jsf:value="#{companyAction.company.locationCode}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label jsf:for="city" class="col-sm-2 control-label">#{messages['company.city']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="city" type="text" placeholder="#{messages['company.city.placeholder']}"
+                           class="form-control"
+                           jsf:value="#{companyAction.company.city}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label jsf:for="contactPerson"
+                       class="col-sm-2 control-label">#{messages['company.contactPerson']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="contactPerson" type="text"
+                           placeholder="#{messages['company.contactPerson.placeholder']}" class="form-control"
+                           jsf:value="#{companyAction.company.contactPerson}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label jsf:for="phone" class="col-sm-2 control-label">#{messages['company.phone']}</label>
+
+                <div class="col-sm-10">
+                    <input jsf:id="phone" type="text" placeholder="#{messages['company.phone.placeholder']}"
+                           class="form-control"
+                           jsf:value="#{companyAction.company.phone}"/>
+                </div>
+            </div>
+
+
+            <div class="btn-toolbar">
+
+                <button type="button"
+                        class="btn btn-danger btn-lg #{companyAction.hasCustomer == true ? '' : 'disabled'} pull-right"
+                        data-toggle="modal" data-target="#deleteModal">
+                    #{messages.delete}
+                </button>
+
+                <h:commandButton styleClass="btn btn-primary btn-lg pull-right" value="#{messages['save']}"
+                                 action="#{companyAction.saveCompany}"/>
+
+            </div>
+        </form>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <h:form>
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&#160;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">#{messages['company.delete.confirm.title']}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>#{messages['company.delete.confirm']} #{companyAction.company.name}?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-toolbar">
+                                <h:commandButton
+                                        styleClass="btn btn-danger pull-right"
+                                        value="#{messages['yes']}" action="#{companyAction.deleteCompany()}">
+                                    <f:ajax onevent="close"/>
+                                </h:commandButton>
+                                <button type="button" class="btn btn-default"
+                                        data-dismiss="modal">#{messages['close']}</button>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            function close(data) {
+                if (data.status == "success") {
+                    $('#deleteModal').modal('hide');
+                }
+            }
+        </script>
+
+    </ui:define>
+</ui:composition>

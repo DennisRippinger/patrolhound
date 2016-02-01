@@ -7,7 +7,7 @@ import de.drippinger.generated.tables.records.TagRecord;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.util.List;
 
 import static de.drippinger.generated.Tables.*;
@@ -16,7 +16,7 @@ import static de.drippinger.generated.Tables.*;
 @Repository
 public class CompanyRepository {
 
-	@Resource
+	@Inject
 	private DSLContext jooq;
 
 

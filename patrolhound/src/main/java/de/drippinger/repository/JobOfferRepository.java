@@ -5,7 +5,7 @@ import de.drippinger.generated.tables.records.JobOfferRecord;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.util.List;
 
 import static de.drippinger.generated.Tables.JOB_OFFER;
@@ -14,7 +14,7 @@ import static de.drippinger.generated.Tables.JOB_OFFER;
 @Repository
 public class JobOfferRepository {
 
-	@Resource
+	@Inject
 	private DSLContext jooq;
 
 	public List<JobOffer> findAllNonObsolete() {
