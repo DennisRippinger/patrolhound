@@ -25,7 +25,9 @@
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="#{parentId == 'home' ? 'active' : ''}"><a href="#{request.contextPath}">Home</a></li>
+				<li class="#{parentId == 'home' ? 'active' : ''}">
+					<h:link outcome="pretty:home">Home</h:link>
+				</li>
 				<li class="#{parentId == 'customerList' ? 'active' : ''}">
 					<h:link outcome="pretty:customerList">Company</h:link>
 				</li>
