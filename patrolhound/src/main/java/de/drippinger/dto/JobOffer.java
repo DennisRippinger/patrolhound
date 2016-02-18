@@ -31,7 +31,7 @@ public class JobOffer implements IJobOffer {
 	private String description;
 
 	private Boolean obsolete;
-	
+
 
 	public void from(IJobOffer from) {
 
@@ -39,5 +39,10 @@ public class JobOffer implements IJobOffer {
 
 	public <E extends IJobOffer> E into(E into) {
 		return null;
+	}
+
+	public void setJobId(String jobId){
+		this.jobId = jobId;
+		this.jobIdHash = jobId.hashCode();
 	}
 }
