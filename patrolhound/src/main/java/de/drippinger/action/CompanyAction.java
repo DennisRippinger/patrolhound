@@ -1,7 +1,9 @@
 package de.drippinger.action;
 
 import de.drippinger.dto.Company;
+import de.drippinger.dto.JobOffer;
 import de.drippinger.repository.CompanyRepository;
+import de.drippinger.repository.JobOfferRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

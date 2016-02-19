@@ -8,6 +8,11 @@
 		<view-id value="/index.xhtml"/>
 	</url-mapping>
 
+	<url-mapping id="companyOverview">
+		<pattern value="/co/#{id : overviewAction.companyID}" />
+		<view-id value="/views/companyOverview.xhtml" />
+	</url-mapping>
+
 	<url-mapping id="customer">
 		<pattern value="/customer"></pattern>
 		<view-id value="/views/customer.xhtml"/>

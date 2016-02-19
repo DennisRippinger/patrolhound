@@ -37,12 +37,6 @@ public class HomeAction implements Serializable {
 	@Inject
 	private transient CompanyRepository companyRepository;
 
-	@Getter
-	private List<JobOffer> allJobOffers;
-
-	@Getter
-	private List<JobOffer> newJobOffers;
-
 	@Inject
 	private TfIdfCalculator tfIdfCalculator;
 
@@ -56,27 +50,5 @@ public class HomeAction implements Serializable {
 		tfIdfCalculator.calculateTfIDForCompany(companies.get(0));
 	}
 
-	@PostConstruct
-	public void initPage() {
-		log.info("Home Action inited");
-
-		// TODO Add Cache
-		allJobOffers = jobOfferRepository.findAllNonObsolete();
-		if (!allJobOffers.isEmpty()) {
-
-
-			//allJobOffers.sort(Comparator.comparing(JobOffer::getJobAnnouncementTime).reversed());
-
-//			newJobOffers = allJobOffers
-//					.stream()
-//					.filter(
-//							x -> x.getJobAnnouncementTime()
-//									.isAfter(
-//											LocalDateTime.now().minus(Duration.ofDays(2))
-//									)
-//					)
-//					.collect(Collectors.toList());
-		}
-	}
 
 }

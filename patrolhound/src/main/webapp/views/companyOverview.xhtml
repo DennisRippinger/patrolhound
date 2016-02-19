@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+					 xmlns:f="http://xmlns.jcp.org/jsf/core"
+					 xmlns:h="http://java.sun.com/jsf/html"
+					 xmlns:ui="http://java.sun.com/jsf/facelets"
+					 template="/templates/master.xhtml">
+
+	<ui:define name="content">
+		<h:dataTable id="companyOffers-all" styleClass="table table-hover" value="#{overviewAction.loadJobOffers()}"
+						 var="jobOffer">
+			<h:column>
+				<f:facet name="header">#{messages['company.jobDescription']}</f:facet>
+				#{jobOffer.jobTitle}
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{messages['company.announced']}</f:facet>
+				<h:outputText value="#{jobOffer.jobAnnouncementTime}"/>
+			</h:column>
+		</h:dataTable>
+
+
+		<script src="#{request.contextPath}/static/jasny.js"/>
+	</ui:define>
+
+
+</ui:composition>

@@ -40,7 +40,6 @@ public class CompanyRepository {
 		return company;
 	}
 
-
 	public Integer countOpenJobOffersForCompany(Long companyID) {
 		Integer result = jooq
 			.selectCount()
