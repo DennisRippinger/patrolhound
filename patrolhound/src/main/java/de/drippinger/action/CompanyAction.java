@@ -52,6 +52,10 @@ public class CompanyAction implements Serializable {
 		company = new Company();
 	}
 
+	public int countOffers(Long companyID) {
+		return companyRepository.countOpenJobOffersForCompany(companyID);
+	}
+
 	public void deleteCompany() {
 		log.info("Delete {}", company.getName());
 

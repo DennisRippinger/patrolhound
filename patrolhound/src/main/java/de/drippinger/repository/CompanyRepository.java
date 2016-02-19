@@ -30,14 +30,26 @@ public class CompanyRepository {
 		return companies;
 	}
 
-	public Company find(Long customerID) {
+	public Company find(Long companyID) {
 		Company company = jooq
 			.select()
 			.from(COMPANY)
-			.where(COMPANY.ID.eq(customerID))
+			.where(COMPANY.ID.eq(companyID))
 			.fetchOneInto(Company.class);
 
 		return company;
+	}
+
+
+	public Integer countOpenJobOffersForCompany(Long companyID) {
+		Integer result = jooq
+			.selectCount()
+			.from(JOB_OFFER)
+			.where(JOB_OFFER.COMPANY_ID.eq(companyID))
+			.and(JOB_OFFER.OBSOLETE.eq(false))
+			.fetchOne(0, int.class);
+
+		return result;
 	}
 
 	public List<String> fetchTagsForCompany(Company company) {

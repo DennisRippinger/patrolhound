@@ -24,6 +24,10 @@
                 <f:facet name="header">#{messages['company.phone']}</f:facet>
                 <h:outputText value="#{currentCompany.phone}"/>
             </h:column>
+			  <h:column>
+				  <f:facet name="header">#{messages['company.offers']}</f:facet>
+				  <h:outputText value="#{companyAction.countOffers(currentCompany.id)}"/>
+			  </h:column>
         </h:dataTable>
 
         <script src="#{request.contextPath}/static/jasny.js"/>
