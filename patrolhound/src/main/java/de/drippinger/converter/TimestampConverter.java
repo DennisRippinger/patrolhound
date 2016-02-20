@@ -1,15 +1,19 @@
 package de.drippinger.converter;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 
 
-@FacesConverter(forClass = Timestamp.class)
+@FacesConverter(forClass = Instant.class)
 public class TimestampConverter implements Converter {
+
+	private PrettyTime prettyTime = new PrettyTime();
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -18,7 +22,8 @@ public class TimestampConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		return new SimpleDateFormat("dd.MM.yyyy HH:mm").format((Timestamp) value);
-	}
+		Instant instant = (Instant) value;
 
+		return prettyTime.format(Date.from(instant));
+	}
 }

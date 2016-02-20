@@ -4,6 +4,7 @@ import de.drippinger.generated.tables.interfaces.IJobOffer;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 
 /**
@@ -26,7 +27,7 @@ public class JobOffer implements IJobOffer {
 
 	private String companyName;
 
-	private Timestamp jobAnnouncementTime;
+	private Instant jobAnnouncementTime;
 
 	private String description;
 

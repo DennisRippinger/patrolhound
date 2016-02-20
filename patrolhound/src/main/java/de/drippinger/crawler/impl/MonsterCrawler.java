@@ -8,13 +8,15 @@ import de.drippinger.crawler.JobCrawler;
 import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
+import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.util.LevenshteinDistance;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -26,10 +28,13 @@ public class MonsterCrawler extends JobCrawler {
 	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(MonsterCrawler.class);
 
-	@Resource
+	@Inject
 	private JobOfferRepository jobOfferRepository;
 
-	@Resource
+	@Inject
+	CompanyRepository companyRepository;
+
+	@Inject
 	private LevenshteinDistance levenshteinDistance;
 
 	private MonsterJobPageCrawler monsterJobPageCrawler;
@@ -52,25 +57,33 @@ public class MonsterCrawler extends JobCrawler {
 			String monsterUrl = getURL(MONSTER_URL, company.getName(), counter++);
 			HtmlPage monsterPage;
 
+			Boolean hasChanges = false;
+
 			try {
 				monsterPage = CrawlerUtil.getWebPage(webClient, monsterUrl, 0);
-				extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
+				hasChanges |= extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
 
 				while (hasNext(monsterPage)) {
 					monsterUrl = getURL(MONSTER_URL, company.getName(), counter++);
 					monsterPage = CrawlerUtil.getWebPage(webClient, monsterUrl, 0);
 
-					extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
+					hasChanges |= extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
 				}
 
 			} catch (CrawlerException e) {
 				log.error("Could not load Monster Page", e);
 			}
+
+			if (hasChanges) {
+				companyRepository.updateLAstUpdateTimeStamp(company);
+			}
+
 		}
 
 		// Uncheck no longer listed job offers
 		jobOffers.removeAll(knownJobOffers);
 		jobOffers.forEach(jobOfferRepository::makeObsolete);
+
 		log.info("Unchecked {} no longer listed jobs", jobOffers.size());
 	}
 
@@ -80,16 +93,17 @@ public class MonsterCrawler extends JobCrawler {
 		return domNextPage != null;
 	}
 
-	private void extractJobOffers(List<JobOffer> jobOffers, List<JobOffer> knownJobOffers, HtmlPage monsterPage, Company company, WebClient webClient) {
+	private Boolean extractJobOffers(List<JobOffer> jobOffers, List<JobOffer> knownJobOffers, HtmlPage monsterPage, Company company, WebClient webClient) {
 		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//div[@class='jobTitleCol fnt4']");
+
+		Boolean hasChanges = false;
 
 		for (DomElement divJobOffer : divJobOffers) {
 			String jobID = getJobID(divJobOffer);
 			String jobTitle = getJobTitle(divJobOffer);
 			String jobURL = getJobURL(divJobOffer);
 			String companyName = getCompanyName(divJobOffer);
-			LocalDateTime jobAnnouncementTime = getJobAnnouncementTime(divJobOffer);
-
+			Instant jobAnnouncementTime = getJobAnnouncementTime(divJobOffer);
 
 			JobOffer jobOffer = new JobOffer();
 			jobOffer.setJobId(jobID);
@@ -97,7 +111,7 @@ public class MonsterCrawler extends JobCrawler {
 			jobOffer.setJobTitle(jobTitle);
 			jobOffer.setJobUrl(jobURL);
 			jobOffer.setCompanyName(companyName);
-			jobOffer.setJobAnnouncementTime(Timestamp.valueOf(jobAnnouncementTime));
+			jobOffer.setJobAnnouncementTime(jobAnnouncementTime);
 			jobOffer.setObsolete(false);
 
 			Boolean isKnown = isKnown(jobOffers, knownJobOffers, jobOffer);
@@ -108,9 +122,12 @@ public class MonsterCrawler extends JobCrawler {
 
 				jobOfferRepository.save(jobOffer);
 				log.info("Saved new Job Offer {}", jobOffer.getJobTitle());
+
+				hasChanges = true;
 			}
 
 		}
+		return hasChanges;
 	}
 
 	private void getJobDescription(JobOffer jobOffer, WebClient webClient) {
@@ -130,29 +147,29 @@ public class MonsterCrawler extends JobCrawler {
 		return false;
 	}
 
-	private LocalDateTime getJobAnnouncementTime(DomElement divJobOffer) {
+	private Instant getJobAnnouncementTime(DomElement divJobOffer) {
 		DomElement domAnnouncementTime = divJobOffer.getFirstByXPath(".//div[@class='fnt20']");
 		String announcementTime = domAnnouncementTime.asText();
 		if (announcementTime.contains("Heute")) {
-			return LocalDateTime.now();
+			return Instant.now();
 		} else if (announcementTime.contains("Tagen")) {
 			return extractTimeDifference(announcementTime, ChronoUnit.DAYS);
 		} else if (announcementTime.contains("Wochen")) {
 			return extractTimeDifference(announcementTime, ChronoUnit.WEEKS);
 		} else {
 			// Unknown Case, but hey, it's a crawler. Strange things can happen.
-			return LocalDateTime.now();
+			return Instant.now();
 		}
 	}
 
-	private LocalDateTime extractTimeDifference(String announcementTime, ChronoUnit timeUnit) {
+	private Instant extractTimeDifference(String announcementTime, ChronoUnit timeUnit) {
 		List<Integer> result = CrawlerUtil.extractPositiveNumbersFromString(announcementTime);
 		if (!result.isEmpty()) {
 			Integer daysMinus = result.get(0);
-			return LocalDateTime.now().minus(daysMinus, timeUnit);
+			return Instant.now().minus(daysMinus, timeUnit);
 		}
 
-		return LocalDateTime.now();
+		return Instant.now();
 	}
 
 	private String getCompanyName(DomElement divJobOffer) {

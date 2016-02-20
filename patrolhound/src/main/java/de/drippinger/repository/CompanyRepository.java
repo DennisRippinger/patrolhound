@@ -8,6 +8,9 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import static de.drippinger.generated.Tables.*;
@@ -83,6 +86,14 @@ public class CompanyRepository {
 	public void delete(Company company) {
 		jooq
 			.deleteFrom(COMPANY)
+			.where(COMPANY.ID.eq(company.getId()))
+			.execute();
+	}
+
+	public void updateLAstUpdateTimeStamp(Company company) {
+		jooq
+			.update(COMPANY)
+			.set(COMPANY.LAST_UPDATE, Instant.now())
 			.where(COMPANY.ID.eq(company.getId()))
 			.execute();
 	}

@@ -3,6 +3,8 @@ package de.drippinger.dto;
 import de.drippinger.generated.tables.interfaces.ICompany;
 import lombok.Data;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -26,6 +28,8 @@ public class Company implements ICompany {
 	private String contactPerson;
 
 	private String phone;
+
+	private Instant lastUpdate;
 
 	private List<JobOffer> jobOffers;
 

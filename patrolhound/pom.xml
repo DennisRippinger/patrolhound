@@ -139,9 +139,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ocpsoft.prettytime</groupId>
-			<artifactId>prettytime-integration-jsf</artifactId>
-			<version>3.2.5.Final</version>
+			<artifactId>prettytime</artifactId>
+			<version>4.0.1.Final</version>
 		</dependency>
+
 
 		<!-- Wro4j -->
 		<dependency>
@@ -246,6 +247,7 @@
 					<!-- Generator parameters -->
 					<generator>
 						<name>org.jooq.util.DefaultGenerator</name>
+
 						<generate>
 							<interfaces>true</interfaces>
 						</generate>
@@ -253,6 +255,18 @@
 							<name>org.jooq.util.postgres.PostgresDatabase</name>
 							<includes>.*</includes>
 							<inputSchema>public</inputSchema>
+							<customTypes>
+								<customType>
+									<name>java.time.Instant</name>
+									<converter>de.drippinger.converter.jooq.InstantConverter</converter>
+								</customType>
+							</customTypes>
+							<forcedTypes>
+								<forcedType>
+									<name>java.time.Instant</name>
+									<types>.*timestamp.*</types>
+								</forcedType>
+							</forcedTypes>
 						</database>
 						<target>
 							<packageName>de.drippinger.generated</packageName>
