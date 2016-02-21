@@ -15,6 +15,8 @@ public class TimestampConverter implements Converter {
 
 	private PrettyTime prettyTime = new PrettyTime();
 
+	private static String TIME_STRING = "<time datetime=\"%s\">%s</time>";
+
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
 		return null;
@@ -24,6 +26,6 @@ public class TimestampConverter implements Converter {
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		Instant instant = (Instant) value;
 
-		return prettyTime.format(Date.from(instant));
+		return String.format(TIME_STRING,instant.toString(), prettyTime.format(Date.from(instant)));
 	}
 }

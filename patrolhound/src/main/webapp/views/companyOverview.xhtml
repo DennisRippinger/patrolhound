@@ -13,7 +13,7 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">#{messages['company.announced']}</f:facet>
-				<h:outputText value="#{jobOffer.jobAnnouncementTime}"/>
+				<h:outputText value="#{jobOffer.jobAnnouncementTime}" escape="false"/>
 			</h:column>
 		</h:dataTable>
 
