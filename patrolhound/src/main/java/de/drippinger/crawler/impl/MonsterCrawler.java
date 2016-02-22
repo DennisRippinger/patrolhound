@@ -32,7 +32,7 @@ public class MonsterCrawler extends JobCrawler {
 	private JobOfferRepository jobOfferRepository;
 
 	@Inject
-	CompanyRepository companyRepository;
+	private CompanyRepository companyRepository;
 
 	@Inject
 	private LevenshteinDistance levenshteinDistance;
@@ -88,13 +88,13 @@ public class MonsterCrawler extends JobCrawler {
 	}
 
 	private boolean hasNext(HtmlPage monsterPage) {
-		DomElement domNextPage = monsterPage.getFirstByXPath("//a[@class='box nextLink fnt5']");
+		DomElement domNextPage = monsterPage.getFirstByXPath("//div[@id='page_navigation']/div/span[@class='nextLink fnt13']");
 
-		return domNextPage != null;
+		return domNextPage == null;
 	}
 
 	private Boolean extractJobOffers(List<JobOffer> jobOffers, List<JobOffer> knownJobOffers, HtmlPage monsterPage, Company company, WebClient webClient) {
-		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//div[@class='jobTitleCol fnt4']");
+		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//a[@class='jobTitleCol fnt4']");
 
 		Boolean hasChanges = false;
 
