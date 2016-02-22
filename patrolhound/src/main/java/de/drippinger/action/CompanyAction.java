@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @Named
-@Scope("session")
+@Scope("view")
 public class CompanyAction implements Serializable {
 
 	private static final long serialVersionUID = 503243196512521686L;
@@ -65,6 +65,7 @@ public class CompanyAction implements Serializable {
 	}
 
 	public void saveCompany() {
+
 		companyRepository.save(company);
 	}
 
