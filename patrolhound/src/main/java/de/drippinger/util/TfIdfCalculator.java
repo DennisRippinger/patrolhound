@@ -4,18 +4,22 @@ import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
-import org.slf4j.Logger;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.process.CoreLabelTokenFactory;
+import edu.stanford.nlp.process.PTBTokenizer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 public class TfIdfCalculator {
 
-	private static final Logger log = org.slf4j.LoggerFactory.getLogger(TfIdfCalculator.class);
 	@Resource
 	private transient JobOfferRepository jobOfferRepository;
 
@@ -29,8 +33,10 @@ public class TfIdfCalculator {
 		Map<String, Integer> companyWordList = new HashMap<>();
 		Map<String, Double> tfidfMap = new HashMap<>();
 
-		List<JobOffer> companyJobOffers = jobOfferList.stream().filter(x -> x.getCompanyId().equals(company.getId())).collect(
-			Collectors.toList());
+		List<JobOffer> companyJobOffers = jobOfferList
+			.stream()
+			.filter(x -> x.getCompanyId().equals(company.getId()))
+			.collect(Collectors.toList());
 
 		getAllJobOffersWordList(jobOfferList, allWordList);
 
@@ -73,16 +79,15 @@ public class TfIdfCalculator {
 	}
 
 	private void getJobOfferWordList(JobOffer jobOffer, Map<String, Integer> wordList) {
-
-		StringTokenizer st = new StringTokenizer(jobOffer.getDescription());
-
-		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
-			if (token.endsWith(".")) {
-				token = token.substring(0, token.length() - 1);
+		
+		PTBTokenizer<CoreLabel> tokenizer = new PTBTokenizer<>(new StringReader(jobOffer.getDescription()),
+			new CoreLabelTokenFactory(), "");
+		while (tokenizer.hasNext()) {
+			CoreLabel label = tokenizer.next();
+			String token = label.toString();
+			if (token.length() > 1) {
+				wordList.merge(token, 1, (x, y) -> x + y);
 			}
-
-			wordList.merge(token, 1, (x, y) -> x + y);
 		}
 	}
 
