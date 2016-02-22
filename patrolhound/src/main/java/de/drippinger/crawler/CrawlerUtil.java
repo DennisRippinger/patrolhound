@@ -30,8 +30,8 @@ public final class CrawlerUtil {
 
 	static {
 		browserVersionDesktop.add(BrowserVersion.CHROME);
-		browserVersionDesktop.add(BrowserVersion.FIREFOX_31);
-		browserVersionDesktop.add(BrowserVersion.INTERNET_EXPLORER_11);
+		browserVersionDesktop.add(BrowserVersion.FIREFOX_38);
+		browserVersionDesktop.add(BrowserVersion.EDGE);
 
 		// Maybe add mobile browsers
 	}
