@@ -10,82 +10,110 @@ import edu.stanford.nlp.process.PTBTokenizer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.io.StringReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Slf4j
 @Service
 public class TfIdfCalculator {
 
-	@Resource
-	private transient JobOfferRepository jobOfferRepository;
+	@Inject
+	private JobOfferRepository jobOfferRepository;
 
-	@Resource
-	private transient CompanyRepository companyRepository;
+	@Inject
+	private CompanyRepository companyRepository;
+
+	@Inject
+	private StopWords stopWords;
 
 	public void calculateTfIDForCompany(Company company) {
-		List<JobOffer> jobOfferList = jobOfferRepository.findAll();
+		List<JobOffer> jobOfferList = jobOfferRepository.findAll(company.getId());
 
-		Map<String, Integer> allWordList = new HashMap<>();
-		Map<String, Integer> companyWordList = new HashMap<>();
-		Map<String, Double> tfidfMap = new HashMap<>();
+		Map<String, Integer> wordInDocumentMap = new HashMap<>();
 
-		List<JobOffer> companyJobOffers = jobOfferList
-			.stream()
-			.filter(x -> x.getCompanyId().equals(company.getId()))
-			.collect(Collectors.toList());
+		countWordDocumentOccurrences(jobOfferList, wordInDocumentMap);
 
-		getAllJobOffersWordList(jobOfferList, allWordList);
+		for (JobOffer jobOffer : jobOfferList) {
 
-		for (JobOffer jobOffer : companyJobOffers) {
-			getJobOfferWordList(jobOffer, companyWordList);
+			Map<String, Double> tfidfMap = new HashMap<>();
+			Map<String, Integer> offerWordMap = new HashMap<>();
 
-			for (Map.Entry<String, Integer> entry : allWordList.entrySet()) {
-				Integer companyWordCount = companyWordList.get(entry.getKey());
+			getJobOfferWordList(jobOffer, offerWordMap);
 
-				if (companyWordCount != null) {
-					Double result = Double.valueOf(companyWordCount) / Double.valueOf(entry.getValue());
+			for (Map.Entry<String, Integer> currentWord : offerWordMap.entrySet()) {
+				Double tfidf = calculateTFIDF(jobOfferList, wordInDocumentMap, currentWord);
 
-					tfidfMap.put(entry.getKey(), result);
-				}
-
+				tfidfMap.put(currentWord.getKey(), tfidf);
 			}
 
-			Map<String, Double> result = sortByValue(tfidfMap);
+			Map<String, Double> resultMap = fetchFirstEntries(tfidfMap);
 
-			Integer counter = 0;
-			List<String> resultList = new ArrayList<>();
-			for (Map.Entry<String, Double> entry : result.entrySet()) {
-				counter++;
-				log.info(entry.toString());
-				resultList.add(entry.getKey());
-				if (counter > 20) {
-					break;
-				}
-			}
-
-			companyRepository.insertTags(resultList, company, jobOffer);
+			companyRepository.insertTags(resultMap, company, jobOffer);
 		}
 
 	}
 
-	private void getAllJobOffersWordList(List<JobOffer> jobOfferList, Map<String, Integer> wordList) {
-		for (JobOffer jobOffer : jobOfferList) {
-			getJobOfferWordList(jobOffer, wordList);
+	private Double calculateTFIDF(List<JobOffer> jobOfferList, Map<String, Integer> wordInDocumentMap, Map.Entry<String, Integer> entry) {
+		Integer termFrequency = entry.getValue();
+		Double inverseTermFrequency = Math.log(jobOfferList.size() / wordInDocumentMap.get(entry.getKey()));
+
+		return termFrequency * inverseTermFrequency;
+	}
+
+	private Map<String, Double> fetchFirstEntries(Map<String, Double> tfidfMap) {
+		Map<String, Double> result = sortByValue(tfidfMap);
+
+		Integer counter = 0;
+		Map<String, Double> resultList = new LinkedHashMap<>();
+		for (Map.Entry<String, Double> resultEntry : result.entrySet()) {
+			counter++;
+			resultList.put(resultEntry.getKey(), resultEntry.getValue());
+			if (counter > 20) {
+				break;
+			}
+
 		}
+		return resultList;
+	}
+
+	private void countWordDocumentOccurrences(List<JobOffer> jobOfferList, Map<String, Integer> wordDocumentOccurrence) {
+		for (JobOffer jobOffer : jobOfferList) {
+			Set<String> wordSet = documentToSet(jobOffer.getDescription());
+			for (String word : wordSet) {
+				wordDocumentOccurrence.merge(word, 1, (x, y) -> x + y);
+			}
+
+		}
+	}
+
+	private Set<String> documentToSet(String document) {
+		PTBTokenizer<CoreLabel> tokenizer = new PTBTokenizer<>(new StringReader(document), new CoreLabelTokenFactory(), "");
+		Set<String> result = new LinkedHashSet<>();
+
+		while (tokenizer.hasNext()) {
+			String token = tokenizer.next().toString();
+			if (isTokenApplicable(token)) {
+				result.add(token);
+			}
+		}
+
+		return result;
+	}
+
+	private boolean isTokenApplicable(String token) {
+		return token.length() > 1 && !stopWords.getGermanStopWords().contains(token);
 	}
 
 	private void getJobOfferWordList(JobOffer jobOffer, Map<String, Integer> wordList) {
-		
+
 		PTBTokenizer<CoreLabel> tokenizer = new PTBTokenizer<>(new StringReader(jobOffer.getDescription()),
 			new CoreLabelTokenFactory(), "");
 		while (tokenizer.hasNext()) {
 			CoreLabel label = tokenizer.next();
 			String token = label.toString();
-			if (token.length() > 1) {
+			if (isTokenApplicable(token)) {
 				wordList.merge(token, 1, (x, y) -> x + y);
 			}
 		}

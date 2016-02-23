@@ -8,10 +8,9 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static de.drippinger.generated.Tables.*;
 
@@ -67,18 +66,18 @@ public class CompanyRepository {
 		return result;
 	}
 
-	public void insertTags(List<String> tags, Company company, JobOffer jobOffer) {
+	public void insertTags(Map<String, Double> tags, Company company, JobOffer jobOffer) {
 
-		for (String stringTag : tags) {
+		for (Map.Entry<String, Double> tagEntry : tags.entrySet()) {
 			List<Long> values = jooq.select()
 				.from(TAG)
-				.where(TAG.TAG_FIELD.eq(stringTag))
+				.where(TAG.TAG_FIELD.eq(tagEntry.getKey()))
 				.fetch()
 				.getValues(TAG.ID);
 			if (values.isEmpty()) {
-				insertNewTag(stringTag, company, jobOffer);
+				insertNewTag(tagEntry, company, jobOffer);
 			} else {
-				insertReferenceOfTag(values.get(0), company, jobOffer);
+				insertReferenceOfTag(values.get(0), company, jobOffer, tagEntry.getValue());
 			}
 		}
 	}
@@ -107,26 +106,26 @@ public class CompanyRepository {
 	public void save(Company company) {
 		CompanyRecord companyRecord = jooq.newRecord(COMPANY, company);
 
+
 		jooq.executeInsert(companyRecord);
 	}
 
-
-	private void insertReferenceOfTag(Long id, Company company, JobOffer jobOffer) {
+	private void insertReferenceOfTag(Long id, Company company, JobOffer jobOffer, Double tfidf) {
 		jooq.insertInto(TAG_FK)
-			.columns(TAG_FK.COMPANY_ID, TAG_FK.JOB_OFER_ID, TAG_FK.TAG_ID)
-			.values(company.getId(), jobOffer.getId(), id)
+			.columns(TAG_FK.COMPANY_ID, TAG_FK.JOB_OFER_ID, TAG_FK.TAG_ID, TAG_FK.TFID)
+			.values(company.getId(), jobOffer.getId(), id, tfidf)
 			.execute();
 	}
 
-	private void insertNewTag(String tag, Company company, JobOffer jobOffer) {
+	private void insertNewTag(Map.Entry<String, Double> tag, Company company, JobOffer jobOffer) {
 		TagRecord tagID = jooq
 			.insertInto(TAG)
 			.columns(TAG.TAG_FIELD)
-			.values(tag)
+			.values(tag.getKey())
 			.returning(TAG.ID)
 			.fetchOne();
 		Long id = tagID.getId();
 
-		insertReferenceOfTag(id, company, jobOffer);
+		insertReferenceOfTag(id, company, jobOffer, tag.getValue());
 	}
 }

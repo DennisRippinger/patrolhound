@@ -49,6 +49,17 @@ public class JobOfferRepository {
 		return jobOffers;
 	}
 
+
+	public List<JobOffer> findAll(Long companyID) {
+		List<JobOffer> jobOffers = jooq
+			.select()
+			.from(JOB_OFFER)
+			.where(JOB_OFFER.COMPANY_ID.eq(companyID))
+			.fetchInto(JobOffer.class);
+
+		return jobOffers;
+	}
+
 	public void save(JobOffer jobOffer) {
 		JobOfferRecord jobOfferRecord = jooq.newRecord(JOB_OFFER, jobOffer);
 		jooq.executeInsert(jobOfferRecord);
