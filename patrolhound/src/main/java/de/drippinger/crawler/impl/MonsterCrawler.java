@@ -89,8 +89,9 @@ public class MonsterCrawler extends JobCrawler {
 
 	private boolean hasNext(HtmlPage monsterPage) {
 		DomElement domNextPage = monsterPage.getFirstByXPath("//div[@id='page_navigation']/div/span[@class='nextLink fnt13']");
+		DomElement pageNavigation = monsterPage.getFirstByXPath("//div[@id='page_navigation']");
 
-		return domNextPage == null;
+		return pageNavigation != null && domNextPage == null;
 	}
 
 	private Boolean extractJobOffers(List<JobOffer> jobOffers, List<JobOffer> knownJobOffers, HtmlPage monsterPage, Company company, WebClient webClient) {
