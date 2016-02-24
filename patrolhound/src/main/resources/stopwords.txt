@@ -262,6 +262,7 @@ wolltet
 würde
 würden
 z.B.
+z.b.
 zum
 zur
 zwar
@@ -478,6 +479,7 @@ eröffnet
 eröffnete
 eröffnetes
 etc
+etc.
 etliche
 etwa
 fall

@@ -2,6 +2,7 @@ package de.drippinger.converter.jooq;
 
 import org.jooq.Converter;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -20,7 +21,7 @@ public class InstantConverter implements Converter<Timestamp, Instant> {
 	@Override
 	public Timestamp to(Instant instant) {
 		if (instant != null) {
-			return new Timestamp(instant.getEpochSecond());
+			return Timestamp.from(instant);
 		}
 		return null;
 	}

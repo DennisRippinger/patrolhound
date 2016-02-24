@@ -32,16 +32,12 @@ public class HomeAction implements Serializable {
 	private transient MonsterCrawler crawlerMonster;
 
 	@Inject
-	private transient JobOfferRepository jobOfferRepository;
-
-	@Inject
 	private transient CompanyRepository companyRepository;
 
 	@Inject
 	private TfIdfCalculator tfIdfCalculator;
 
 	public void crawlJobs() {
-		log.info("Crawl info pressed");
 
 		List<Company> companies = companyRepository.findAll();
 

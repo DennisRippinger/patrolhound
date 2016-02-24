@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @Named
-@Scope("session")
+@Scope("view")
 public class OverviewAction implements Serializable {
 
 	private static final long serialVersionUID = 2829845398395153428L;

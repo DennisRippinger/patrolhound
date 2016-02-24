@@ -11,22 +11,20 @@ import de.drippinger.exception.CrawlerException;
 import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.util.LevenshteinDistance;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class MonsterCrawler extends JobCrawler {
 
 	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
-	private static final Logger log = org.slf4j.LoggerFactory.getLogger(MonsterCrawler.class);
 
 	@Inject
 	private JobOfferRepository jobOfferRepository;
@@ -88,14 +86,14 @@ public class MonsterCrawler extends JobCrawler {
 	}
 
 	private boolean hasNext(HtmlPage monsterPage) {
-		DomElement domNextPage = monsterPage.getFirstByXPath("//div[@id='page_navigation']/div/span[@class='nextLink fnt13']");
-		DomElement pageNavigation = monsterPage.getFirstByXPath("//div[@id='page_navigation']");
+		DomElement domNextPage = monsterPage.getFirstByXPath("//*[@id='page_navigation']/div/span[@class='nextLink fnt13']");
+		DomElement pageNavigation = monsterPage.getFirstByXPath("//*[@id='page_navigation']");
 
 		return pageNavigation != null && domNextPage == null;
 	}
 
 	private Boolean extractJobOffers(List<JobOffer> jobOffers, List<JobOffer> knownJobOffers, HtmlPage monsterPage, Company company, WebClient webClient) {
-		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//a[@class='jobTitleCol fnt4']");
+		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//*[@class='jobTitleCol fnt4']");
 
 		Boolean hasChanges = false;
 
