@@ -8,6 +8,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -103,7 +104,10 @@ public class TfIdfCalculator {
 	}
 
 	private boolean isTokenApplicable(String token) {
-		return token.length() > 1 && !stopWords.getGermanStopWords().contains(token);
+		return token.length() > 1
+			&& !stopWords.getGermanStopWords().contains(token.toLowerCase())
+			// No mixing of Words with numbers
+			&& !StringUtils.isAlphanumeric(token);
 	}
 
 	private void getJobOfferWordList(JobOffer jobOffer, Map<String, Integer> wordList) {

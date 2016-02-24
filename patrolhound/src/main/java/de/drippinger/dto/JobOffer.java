@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 
 /**
@@ -32,6 +33,8 @@ public class JobOffer implements IJobOffer {
 	private String description;
 
 	private Boolean obsolete;
+
+	private List<String> tags;
 
 
 	public void from(IJobOffer from) {

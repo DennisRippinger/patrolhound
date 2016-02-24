@@ -112,7 +112,7 @@ public class CompanyRepository {
 
 	private void insertReferenceOfTag(Long id, Company company, JobOffer jobOffer, Double tfidf) {
 		jooq.insertInto(TAG_FK)
-			.columns(TAG_FK.COMPANY_ID, TAG_FK.JOB_OFER_ID, TAG_FK.TAG_ID, TAG_FK.TFID)
+			.columns(TAG_FK.COMPANY_ID, TAG_FK.JOB_OFFER_ID, TAG_FK.TAG_ID, TAG_FK.TFIDF)
 			.values(company.getId(), jobOffer.getId(), id, tfidf)
 			.execute();
 	}

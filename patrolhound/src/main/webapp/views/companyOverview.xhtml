@@ -12,6 +12,12 @@
 				#{jobOffer.jobTitle}
 			</h:column>
 			<h:column>
+				<f:facet name="header">#{messages['company.tags']}</f:facet>
+				<ui:repeat value="#{jobOffer.tags}" var="tag" varStatus="loop">
+					<button type="button" class="btn btn-info btn-xs">#{tag}</button>#{!loop.last ? ' ' : ''}
+				</ui:repeat>
+			</h:column>
+			<h:column>
 				<f:facet name="header">#{messages['company.announced']}</f:facet>
 				<h:outputText value="#{jobOffer.jobAnnouncementTime}" escape="false"/>
 			</h:column>

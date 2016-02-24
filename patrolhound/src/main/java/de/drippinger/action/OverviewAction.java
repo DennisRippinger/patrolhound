@@ -2,6 +2,7 @@ package de.drippinger.action;
 
 import de.drippinger.dto.JobOffer;
 import de.drippinger.repository.JobOfferRepository;
+import de.drippinger.repository.TagRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +28,22 @@ public class OverviewAction implements Serializable {
 	@Inject
 	private transient JobOfferRepository jobOfferRepository;
 
+	@Inject
+	private transient TagRepository tagRepository;
+
+	private List<JobOffer> jobOfferList;
+
 	@Getter
 	@Setter
 	private Long companyID;
 
 	public List<JobOffer> loadJobOffers() {
-		return jobOfferRepository.findAllNonObsolete(companyID);
+		if (jobOfferList == null) {
+			jobOfferList = jobOfferRepository.findAllNonObsolete(companyID);
+
+			jobOfferList.forEach(x -> x.setTags(tagRepository.findTagsForJobOffer(x.getId(), 5)));
+		}
+		return jobOfferList;
 	}
 }
 

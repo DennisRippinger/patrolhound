@@ -37,6 +37,7 @@ public class JobOfferRepository {
 			.fetchInto(JobOffer.class);
 	}
 
+
 	public void makeObsolete(JobOffer jobOffer) {
 		jooq.update(JOB_OFFER)
 			.set(JOB_OFFER.OBSOLETE, true)
