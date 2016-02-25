@@ -89,7 +89,7 @@ public class CompanyRepository {
 			.execute();
 	}
 
-	public void updateLAstUpdateTimeStamp(Company company) {
+	public void updateLastUpdateTimeStamp(Company company) {
 		jooq
 			.update(COMPANY)
 			.set(COMPANY.LAST_UPDATE, Instant.now())

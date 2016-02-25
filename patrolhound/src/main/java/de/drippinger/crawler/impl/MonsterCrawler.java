@@ -73,7 +73,7 @@ public class MonsterCrawler extends JobCrawler {
 			}
 
 			if (hasChanges) {
-				companyRepository.updateLAstUpdateTimeStamp(company);
+				companyRepository.updateLastUpdateTimeStamp(company);
 			}
 
 		}
