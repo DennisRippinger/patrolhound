@@ -1,6 +1,7 @@
 package de.drippinger.crawler;
 
 import de.drippinger.dto.Company;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 
 import java.io.UnsupportedEncodingException;
@@ -8,9 +9,8 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.List;
 
+@Slf4j
 public abstract class JobCrawler {
-
-	private static final Logger log = org.slf4j.LoggerFactory.getLogger(JobCrawler.class);
 
 	public abstract void crawlJobs(List<Company> companies, String keyword);
 

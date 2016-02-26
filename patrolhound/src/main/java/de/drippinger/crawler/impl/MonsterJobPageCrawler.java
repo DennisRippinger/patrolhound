@@ -7,6 +7,7 @@ import de.drippinger.crawler.CrawlerUtil;
 import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
 import org.slf4j.Logger;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 
@@ -21,13 +22,25 @@ public class MonsterJobPageCrawler {
 
 			DomElement domJobOffer = webPage.getFirstByXPath("//div[@id='monsterAppliesContentHolder']|//*[@id='jobview']");
 
-			// Remove JS Bar at the left
-			Node iaactionFixed = (Node) webPage.getFirstByXPath("//div[@id='iaactionfixed']");
-			if (iaactionFixed != null) {
-				domJobOffer.removeChild(iaactionFixed);
-			}
+			String jobDescription = "";
 
-			String jobDescription = domJobOffer.getTextContent();
+			if (domJobOffer != null) {
+				// Remove JS Bar at the left
+				Node iaactionFixed = (Node) webPage.getFirstByXPath("//div[@id='iaactionfixed']");
+				if (iaactionFixed != null) {
+					try {
+						domJobOffer.removeChild(iaactionFixed);
+
+						jobDescription = domJobOffer.getTextContent();
+					} catch (DOMException e) {
+						jobDescription = webPage.getTextContent();
+					}
+				}
+
+			} else {
+				// Take hole page if layout is unknown
+				jobDescription = webPage.getTextContent();
+			}
 
 			jobOffer.setDescription(jobDescription);
 

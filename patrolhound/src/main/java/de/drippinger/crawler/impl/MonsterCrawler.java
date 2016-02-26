@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 public class MonsterCrawler extends JobCrawler {
 
-	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q={0}&pg={1}";
+	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q=\"{0}\"&pg={1}";
 
 	@Inject
 	private JobOfferRepository jobOfferRepository;
@@ -98,10 +98,15 @@ public class MonsterCrawler extends JobCrawler {
 		Boolean hasChanges = false;
 
 		for (DomElement divJobOffer : divJobOffers) {
+
+			String companyName = getCompanyName(divJobOffer);
+			if (!companyName.toLowerCase().contains(company.getName().toLowerCase())) {
+				continue;
+			}
+
 			String jobID = getJobID(divJobOffer);
 			String jobTitle = getJobTitle(divJobOffer);
 			String jobURL = getJobURL(divJobOffer);
-			String companyName = getCompanyName(divJobOffer);
 			Instant jobAnnouncementTime = getJobAnnouncementTime(divJobOffer);
 
 			JobOffer jobOffer = new JobOffer();
