@@ -5,6 +5,9 @@
 					 template="/templates/master.xhtml">
 
 	<ui:define name="content">
+
+		<h2>#{overviewAction.company.name}</h2>
+
 		<h:dataTable id="companyOffers-all" styleClass="table table-hover" value="#{overviewAction.loadJobOffers()}"
 						 var="jobOffer">
 			<h:column>

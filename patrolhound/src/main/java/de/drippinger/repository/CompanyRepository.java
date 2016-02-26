@@ -27,6 +27,7 @@ public class CompanyRepository {
 		List<Company> companies = jooq
 			.select()
 			.from(COMPANY)
+			.orderBy(COMPANY.LAST_UPDATE.asc())
 			.fetchInto(Company.class);
 
 		return companies;

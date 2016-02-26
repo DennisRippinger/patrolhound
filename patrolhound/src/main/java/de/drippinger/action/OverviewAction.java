@@ -1,6 +1,8 @@
 package de.drippinger.action;
 
+import de.drippinger.dto.Company;
 import de.drippinger.dto.JobOffer;
+import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.repository.TagRepository;
 import lombok.Getter;
@@ -29,9 +31,13 @@ public class OverviewAction implements Serializable {
 	private transient JobOfferRepository jobOfferRepository;
 
 	@Inject
+	private transient CompanyRepository companyRepository;
+
+	@Inject
 	private transient TagRepository tagRepository;
 
 	private List<JobOffer> jobOfferList;
+
 
 	@Getter
 	@Setter
@@ -44,6 +50,10 @@ public class OverviewAction implements Serializable {
 			jobOfferList.forEach(x -> x.setTags(tagRepository.findTagsForJobOffer(x.getId(), 5)));
 		}
 		return jobOfferList;
+	}
+
+	public Company getCompany() {
+		return companyRepository.find(companyID);
 	}
 }
 

@@ -45,7 +45,10 @@ public class JobOfferRepository {
 	}
 
 	public List<JobOffer> findAll() {
-		List<JobOffer> jobOffers = jooq.select().from(JOB_OFFER).fetchInto(JobOffer.class);
+		List<JobOffer> jobOffers = jooq
+			.select()
+			.from(JOB_OFFER)
+			.fetchInto(JobOffer.class);
 
 		return jobOffers;
 	}
