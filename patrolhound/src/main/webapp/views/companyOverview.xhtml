@@ -8,23 +8,59 @@
 
 		<h2>#{overviewAction.company.name}</h2>
 
-		<h:dataTable id="companyOffers-all" styleClass="table table-hover" value="#{overviewAction.loadJobOffers()}"
-						 var="jobOffer">
-			<h:column>
-				<f:facet name="header">#{messages['company.jobDescription']}</f:facet>
-				#{jobOffer.jobTitle}
-			</h:column>
-			<h:column>
-				<f:facet name="header">#{messages['company.tags']}</f:facet>
-				<ui:repeat value="#{jobOffer.tags}" var="tag" varStatus="loop">
-					<button type="button" class="btn btn-info btn-xs">#{tag}</button>#{!loop.last ? ' ' : ''}
-				</ui:repeat>
-			</h:column>
-			<h:column>
-				<f:facet name="header">#{messages['company.announced']}</f:facet>
-				<h:outputText value="#{jobOffer.jobAnnouncementTime}" escape="false"/>
-			</h:column>
-		</h:dataTable>
+		<div>
+			<ul id="jobTab" class="nav nav-tabs">
+				<li role="presentation" class="active">
+					<a href="#jobs" aria-controls="offers" role="tab"
+						data-toggle="tab">Job Offers</a>
+				</li>
+				<li role="presentation">
+					<a href="#summary" aria-controls="summary" role="tab"
+						data-toggle="tab">Summary</a>
+				</li>
+			</ul>
+			<div id="tabContent" class="tab-content">
+				<div role="tabpanel" class="tab-pane fade in active" id="jobs" aria-labelledby="all-tab">
+
+					<h:dataTable id="companyOffers-all" styleClass="table table-hover"
+									 value="#{overviewAction.loadJobOffers()}"
+									 var="jobOffer">
+						<h:column>
+							<f:facet name="header">#{messages['company.jobDescription']}</f:facet>
+							#{jobOffer.jobTitle}
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{messages['company.tags']}</f:facet>
+							<ui:repeat value="#{jobOffer.tags}" var="tag" varStatus="loop">
+								<button type="button" class="btn btn-info btn-xs">#{tag}</button>
+								#{!loop.last ? ' ' : ''}
+							</ui:repeat>
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{messages['company.announced']}</f:facet>
+							<h:outputText value="#{jobOffer.jobAnnouncementTime}" escape="false"/>
+						</h:column>
+					</h:dataTable>
+
+				</div>
+
+
+				<div role="tabpanel" class="tab-pane fade" id="summary" aria-labelledby="summary-tab">
+					<ul class="list-unstyled">
+						<ui:repeat value="#{overviewAction.loadSummary().entrySet().toArray()}" var="entry">
+							<li>
+								<div class="progress">
+									<div class="progress-bar" role="progressbar" aria-valuenow="#{entry.value}" aria-valuemin="0"
+										  aria-valuemax="100" style="width: #{entry.value}%;">
+										<span>#{entry.key}</span>
+									</div>
+								</div>
+							</li>
+						</ui:repeat>
+					</ul>
+				</div>
+			</div>
+		</div>
 
 
 		<script src="#{request.contextPath}/static/jasny.js"/>

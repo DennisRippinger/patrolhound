@@ -8,7 +8,6 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -64,7 +63,7 @@ public class TfIdfCalculator {
 	}
 
 	private Map<String, Double> fetchFirstEntries(Map<String, Double> tfidfMap) {
-		Map<String, Double> result = sortByValue(tfidfMap);
+		Map<String, Double> result = SortUtil.sortByValue(tfidfMap);
 
 		Integer counter = 0;
 		Map<String, Double> resultList = new LinkedHashMap<>();
@@ -104,7 +103,6 @@ public class TfIdfCalculator {
 	}
 
 
-
 	private void getJobOfferWordList(JobOffer jobOffer, Map<String, Integer> wordList) {
 
 		PTBTokenizer<CoreLabel> tokenizer = new PTBTokenizer<>(new StringReader(jobOffer.getDescription()),
@@ -118,17 +116,5 @@ public class TfIdfCalculator {
 		}
 	}
 
-	// From http://stackoverflow.com/a/2581754/769114
-	private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-		List<Map.Entry<K, V>> list =
-			new LinkedList<>(map.entrySet());
-		Collections.sort(list, (o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
-
-		Map<K, V> result = new LinkedHashMap<>();
-		for (Map.Entry<K, V> entry : list) {
-			result.put(entry.getKey(), entry.getValue());
-		}
-		return result;
-	}
 
 }

@@ -1,3 +1,14 @@
 body {
-  padding-top: 75px;
+	padding-top: 75px;
+}
+
+.progress {
+	position: relative;
+}
+
+.progress span {
+	position: absolute;
+	display: block;
+	width: 100%;
+	color: black;
 }
