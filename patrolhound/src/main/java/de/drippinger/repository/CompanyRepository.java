@@ -105,10 +105,12 @@ public class CompanyRepository {
 	}
 
 	public void save(Company company) {
-		CompanyRecord companyRecord = jooq.newRecord(COMPANY, company);
-
-
-		jooq.executeInsert(companyRecord);
+		if (company.getId() != null) {
+			update(company);
+		} else {
+			CompanyRecord companyRecord = jooq.newRecord(COMPANY, company);
+			jooq.executeInsert(companyRecord);
+		}
 	}
 
 	private void insertReferenceOfTag(Long id, Company company, JobOffer jobOffer, Double tfidf) {
