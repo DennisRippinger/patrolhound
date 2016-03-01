@@ -95,7 +95,7 @@ public class TfIdfCalculator {
 
 		while (tokenizer.hasNext()) {
 			String token = tokenizer.next().toString();
-			if (isTokenApplicable(token)) {
+			if (stopWords.isTokenApplicable(token)) {
 				result.add(token);
 			}
 		}
@@ -103,12 +103,7 @@ public class TfIdfCalculator {
 		return result;
 	}
 
-	private boolean isTokenApplicable(String token) {
-		return token.length() > 1
-			&& !stopWords.getGermanStopWords().contains(token.toLowerCase())
-			// No mixing of Words with numbers
-			&& !StringUtils.isAlphanumeric(token);
-	}
+
 
 	private void getJobOfferWordList(JobOffer jobOffer, Map<String, Integer> wordList) {
 
@@ -117,7 +112,7 @@ public class TfIdfCalculator {
 		while (tokenizer.hasNext()) {
 			CoreLabel label = tokenizer.next();
 			String token = label.toString();
-			if (isTokenApplicable(token)) {
+			if (stopWords.isTokenApplicable(token)) {
 				wordList.merge(token, 1, (x, y) -> x + y);
 			}
 		}
