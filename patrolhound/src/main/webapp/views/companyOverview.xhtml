@@ -22,7 +22,7 @@
 			<div id="tabContent" class="tab-content">
 				<div role="tabpanel" class="tab-pane fade in active" id="jobs" aria-labelledby="all-tab">
 
-					<h:dataTable id="companyOffers-all" styleClass="table table-hover"
+					<h:dataTable id="companyOffers-all" styleClass="table table-hover top-buffer"
 									 value="#{overviewAction.loadJobOffers()}"
 									 var="jobOffer">
 						<h:column>
@@ -46,7 +46,7 @@
 
 
 				<div role="tabpanel" class="tab-pane fade" id="summary" aria-labelledby="summary-tab">
-					<ul class="list-unstyled">
+					<ul class="list-unstyled top-buffer">
 						<ui:repeat value="#{overviewAction.loadSummary().entrySet().toArray()}" var="entry">
 							<li>
 								<div class="progress">

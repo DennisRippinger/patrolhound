@@ -2,6 +2,8 @@ body {
 	padding-top: 75px;
 }
 
+.top-buffer { margin-top:20px; }
+
 .progress {
 	position: relative;
 }
