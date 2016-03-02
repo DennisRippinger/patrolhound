@@ -1,9 +1,7 @@
 package de.drippinger.dto;
 
-import de.drippinger.generated.tables.interfaces.IJobOffer;
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
@@ -12,11 +10,7 @@ import java.util.List;
  * @author Dennis Rippinger
  */
 @Data
-public class JobOffer implements IJobOffer {
-
-	private Long id;
-
-	private Long companyId;
+public class JobOffer extends de.drippinger.generated.tables.JobOffer {
 
 	private String jobId;
 
@@ -37,16 +31,9 @@ public class JobOffer implements IJobOffer {
 	private List<String> tags;
 
 
-	public void from(IJobOffer from) {
-
-	}
-
-	public <E extends IJobOffer> E into(E into) {
-		return null;
-	}
-
-	public void setJobId(String jobId){
+	public void setJobId(String jobId) {
 		this.jobId = jobId;
 		this.jobIdHash = jobId.hashCode();
 	}
+
 }
