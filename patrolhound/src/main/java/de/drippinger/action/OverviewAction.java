@@ -76,7 +76,7 @@ public class OverviewAction implements Serializable {
 			tmpResult
 				.entrySet()
 				.stream()
-				.filter(entry -> entry.getValue() > 1)
+				.filter(entry -> entry.getValue() > 2)
 				.forEach(entry -> {
 						Double percentage = (entry.getValue() * 1.0 / loadJobOffers().size()) * 100;
 						result.put(entry.getKey(), Math.floor(percentage));

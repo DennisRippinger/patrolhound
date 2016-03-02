@@ -34,6 +34,7 @@ public class JobOfferRepository {
 			.from(JOB_OFFER)
 			.where(JOB_OFFER.COMPANY_ID.eq(companyID))
 			.and(JOB_OFFER.OBSOLETE.eq(false))
+			.orderBy(JOB_OFFER.JOB_ANNOUNCEMENT_TIME.desc())
 			.fetchInto(JobOffer.class);
 	}
 
