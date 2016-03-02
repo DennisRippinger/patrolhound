@@ -10,8 +10,8 @@ import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
 import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
-import de.drippinger.util.LevenshteinDistance;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -31,9 +31,6 @@ public class MonsterCrawler extends JobCrawler {
 
 	@Inject
 	private CompanyRepository companyRepository;
-
-	@Inject
-	private LevenshteinDistance levenshteinDistance;
 
 	private MonsterJobPageCrawler monsterJobPageCrawler;
 
@@ -144,7 +141,7 @@ public class MonsterCrawler extends JobCrawler {
 				knownJobs.add(jobOffer);
 				return true;
 				// TODO Evaluate usefulness later
-			} else if (levenshteinDistance.calculateSimilarity(jobOffer.getJobId(), currentJob.getJobId()) < 2) {
+			} else if (StringUtils.getLevenshteinDistance(jobOffer.getJobId(), currentJob.getJobId()) < 2) {
 				return true;
 			}
 		}

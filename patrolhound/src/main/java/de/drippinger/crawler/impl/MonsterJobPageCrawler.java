@@ -26,7 +26,7 @@ public class MonsterJobPageCrawler {
 
 			if (domJobOffer != null) {
 				// Remove JS Bar at the left
-				Node iaactionFixed = (Node) webPage.getFirstByXPath("//div[@id='iaactionfixed']");
+				Node iaactionFixed = webPage.getFirstByXPath("//div[@id='iaactionfixed']");
 				if (iaactionFixed != null) {
 					try {
 						domJobOffer.removeChild(iaactionFixed);

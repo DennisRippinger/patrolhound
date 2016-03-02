@@ -10,7 +10,6 @@
 
     <group name="bootstrap-tab">
         <js>classpath:META-INF/resources/webjars/bootstrap/3.3.4/js/tab.js</js>
-        <js>/resources/js/tabSelection.js</js>
     </group>
 
     <group name="jasny">

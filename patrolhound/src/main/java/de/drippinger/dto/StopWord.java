@@ -1,14 +1,13 @@
 package de.drippinger.dto;
 
-import de.drippinger.generated.tables.SwStopword;
-
 /**
  * StopWord
  *
  * @author Dennis Rippinger
  */
-public class StopWord extends SwStopword {
+public class StopWord {
 
+	private Long ID;
 
-
+	private String stopword;
 }

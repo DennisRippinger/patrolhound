@@ -7,7 +7,7 @@ import de.drippinger.generated.tables.SwLocations;
  *
  * @author Dennis Rippinger
  */
-public class StopWordLocation extends SwLocations {
+public class StopWordLocation {
 
 	private Long ID;
 

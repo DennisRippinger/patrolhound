@@ -273,9 +273,6 @@
 					<generator>
 						<name>org.jooq.util.DefaultGenerator</name>
 
-						<generate>
-							<interfaces>true</interfaces>
-						</generate>
 						<database>
 							<name>org.jooq.util.postgres.PostgresDatabase</name>
 							<includes>.*</includes>

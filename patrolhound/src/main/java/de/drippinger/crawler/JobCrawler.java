@@ -2,7 +2,6 @@ package de.drippinger.crawler;
 
 import de.drippinger.dto.Company;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -13,11 +12,7 @@ import java.util.List;
 public abstract class JobCrawler {
 
 	public abstract void crawlJobs(List<Company> companies, String keyword);
-
-	public String getURL(String url, String company, String keyword) {
-		return MessageFormat.format(url, replaceBlanks(company), replaceBlanks(keyword));
-	}
-
+	
 	public String getURL(String url, String company, Integer pageNumber) {
 		return MessageFormat.format(url, replaceBlanks(company), pageNumber);
 	}

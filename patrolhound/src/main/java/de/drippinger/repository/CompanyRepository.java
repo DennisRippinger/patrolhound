@@ -24,48 +24,40 @@ public class CompanyRepository {
 
 	public List<Company> findAll() {
 
-		List<Company> companies = jooq
+		return jooq
 			.select()
 			.from(COMPANY)
 			.where(COMPANY.LAST_UPDATE.isNotNull())
 			.orderBy(COMPANY.LAST_UPDATE.desc())
 			.fetchInto(Company.class);
-
-		return companies;
 	}
 
 	public Company find(Long companyID) {
-		Company company = jooq
+		return jooq
 			.select()
 			.from(COMPANY)
 			.where(COMPANY.ID.eq(companyID))
 			.fetchOneInto(Company.class);
-
-		return company;
 	}
 
 	public Integer countOpenJobOffersForCompany(Long companyID) {
-		Integer result = jooq
+		return jooq
 			.selectCount()
 			.from(JOB_OFFER)
 			.where(JOB_OFFER.COMPANY_ID.eq(companyID))
 			.and(JOB_OFFER.OBSOLETE.eq(false))
 			.fetchOne(0, int.class);
-
-		return result;
 	}
 
 	public List<String> fetchTagsForCompany(Company company) {
 
-		List<String> result = jooq.select(TAG.TAG_FIELD)
+		return jooq.select(TAG.TAG_FIELD)
 			.from(TAG)
 			.join(TAG_FK)
 			.on(TAG.ID.eq(TAG_FK.TAG_ID))
 			.where(TAG_FK.COMPANY_ID.eq(company.getId()))
 			.fetch()
 			.getValues(TAG.TAG_FIELD);
-
-		return result;
 	}
 
 	public void insertTags(Map<String, Double> tags, Company company, JobOffer jobOffer) {

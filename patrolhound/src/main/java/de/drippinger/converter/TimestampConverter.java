@@ -15,7 +15,7 @@ public class TimestampConverter implements Converter {
 
 	private PrettyTime prettyTime = new PrettyTime();
 
-	private static String TIME_STRING = "<time datetime=\"%s\">%s</time>";
+	private static final String TIME_STRING = "<time datetime=\"%s\">%s</time>";
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {

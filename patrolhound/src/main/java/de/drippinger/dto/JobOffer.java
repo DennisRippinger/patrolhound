@@ -10,7 +10,11 @@ import java.util.List;
  * @author Dennis Rippinger
  */
 @Data
-public class JobOffer extends de.drippinger.generated.tables.JobOffer {
+public class JobOffer {
+
+	private Long id;
+
+	private Long companyId;
 
 	private String jobId;
 

@@ -9,7 +9,7 @@ import java.util.List;
  * @author Dennis Rippinger
  */
 @Data
-public class Company extends de.drippinger.generated.tables.Company {
+public class Company {
 
 	private Long id;
 
