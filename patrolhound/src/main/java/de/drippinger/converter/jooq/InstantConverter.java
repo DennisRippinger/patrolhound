@@ -2,7 +2,6 @@ package de.drippinger.converter.jooq;
 
 import org.jooq.Converter;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 

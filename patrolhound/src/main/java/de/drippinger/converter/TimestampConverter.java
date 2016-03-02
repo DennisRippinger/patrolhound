@@ -26,6 +26,6 @@ public class TimestampConverter implements Converter {
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		Instant instant = (Instant) value;
 
-		return String.format(TIME_STRING,instant.toString(), prettyTime.format(Date.from(instant)));
+		return String.format(TIME_STRING, instant.toString(), prettyTime.format(Date.from(instant)));
 	}
 }

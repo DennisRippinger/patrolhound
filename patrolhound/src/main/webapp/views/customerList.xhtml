@@ -1,37 +1,37 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-                template="/templates/master.xhtml">
+					 xmlns:f="http://xmlns.jcp.org/jsf/core"
+					 xmlns:h="http://java.sun.com/jsf/html"
+					 xmlns:ui="http://java.sun.com/jsf/facelets"
+					 xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+					 template="/templates/master.xhtml">
 
-    <ui:param name="parentId" value="customerList"/>
+	<ui:param name="parentId" value="customerList"/>
 
-    <ui:define name="content">
-        <h:dataTable id="companies" styleClass="table table-hover rowlink" value="#{companyAction.loadCompanies()}"
-                     var="currentCompany" pt:data-link="row">
-            <h:column>
-                <f:facet name="header">#{messages['company.name']}</f:facet>
-                <h:link value="#{currentCompany.name}" outcome="customer">
-                    <f:param name="id" value="#{currentCompany.id}"/>
-                </h:link>
-            </h:column>
-            <h:column>
-                <f:facet name="header">#{messages['company.city']}</f:facet>
-                #{currentCompany.city}
-            </h:column>
-            <h:column>
-                <f:facet name="header">#{messages['company.phone']}</f:facet>
-                <h:outputText value="#{currentCompany.phone}"/>
-            </h:column>
-			  <h:column>
-				  <f:facet name="header">#{messages['company.offers']}</f:facet>
-				  <h:outputText value="#{companyAction.countOffers(currentCompany.id)}"/>
-			  </h:column>
-        </h:dataTable>
+	<ui:define name="content">
+		<h:dataTable id="companies" styleClass="table table-hover rowlink" value="#{companyAction.loadCompanies()}"
+						 var="currentCompany" pt:data-link="row">
+			<h:column>
+				<f:facet name="header">#{messages['company.name']}</f:facet>
+				<h:link value="#{currentCompany.name}" outcome="customer">
+					<f:param name="id" value="#{currentCompany.id}"/>
+				</h:link>
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{messages['company.city']}</f:facet>
+				#{currentCompany.city}
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{messages['company.phone']}</f:facet>
+				<h:outputText value="#{currentCompany.phone}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{messages['company.offers']}</f:facet>
+				<h:outputText value="#{companyAction.countOffers(currentCompany.id)}"/>
+			</h:column>
+		</h:dataTable>
 
-        <script src="#{request.contextPath}/static/jasny.js"/>
-    </ui:define>
+		<script src="#{request.contextPath}/static/jasny.js"/>
+	</ui:define>
 
 
 </ui:composition>

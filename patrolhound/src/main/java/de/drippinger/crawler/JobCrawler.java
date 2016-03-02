@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class JobCrawler {
 
 	public abstract void crawlJobs(List<Company> companies, String keyword);
-	
+
 	public String getURL(String url, String company, Integer pageNumber) {
 		return MessageFormat.format(url, replaceBlanks(company), pageNumber);
 	}
