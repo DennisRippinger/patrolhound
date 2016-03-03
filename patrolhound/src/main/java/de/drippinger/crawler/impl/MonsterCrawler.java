@@ -128,6 +128,8 @@ public class MonsterCrawler extends JobCrawler {
 				log.info("Saved new Job Offer {}", jobOffer.getJobTitle());
 
 				hasChanges = true;
+			} else {
+				log.info("Job {}, was already known", jobOffer.getJobTitle());
 			}
 
 		}

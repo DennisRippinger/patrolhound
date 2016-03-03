@@ -1,5 +1,6 @@
 package de.drippinger.repository;
 
+import de.drippinger.generated.Sequences;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,14 @@ public class TagRepository {
 
 	@Inject
 	private DSLContext jooq;
+
+	public void truncateTags() {
+		jooq.truncate(TAG);
+		jooq.truncate(TAG_FK);
+
+		jooq.alterSequence(Sequences.SEQ_TAG).restart();
+		jooq.alterSequence(Sequences.SEQ_TAG_FK).restart();
+	}
 
 	public List<String> findTagsForJobOffer(Long jobOfferID, Integer limit) {
 		List<String> result = jooq

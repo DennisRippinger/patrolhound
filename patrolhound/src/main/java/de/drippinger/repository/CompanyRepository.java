@@ -30,13 +30,26 @@ public class CompanyRepository {
 	 *
 	 * @return the list
 	 */
-	public List<Company> findAll() {
+	public List<Company> findAllForUI() {
 
 		return jooq
 			.select()
 			.from(COMPANY)
 			.where(COMPANY.LAST_UPDATE.isNotNull())
 			.orderBy(COMPANY.LAST_UPDATE.desc())
+			.fetchInto(Company.class);
+	}
+
+	/**
+	 * Find all list.
+	 *
+	 * @return the list
+	 */
+	public List<Company> findAll() {
+
+		return jooq
+			.select()
+			.from(COMPANY)
 			.fetchInto(Company.class);
 	}
 
@@ -66,7 +79,7 @@ public class CompanyRepository {
 			.from(JOB_OFFER)
 			.where(JOB_OFFER.COMPANY_ID.eq(companyID))
 			.and(JOB_OFFER.OBSOLETE.eq(false))
-			.fetchOne(0, int.class);
+			.fetchOne(0, Integer.class);
 	}
 
 	/**

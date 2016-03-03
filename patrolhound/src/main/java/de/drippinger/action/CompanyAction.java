@@ -44,7 +44,7 @@ public class CompanyAction implements Serializable {
 	 * @return the list of all companies.
 	 */
 	public List<Company> loadCompanies() {
-		return companyRepository.findAll();
+		return companyRepository.findAllForUI();
 	}
 
 	/**

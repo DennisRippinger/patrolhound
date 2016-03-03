@@ -31,8 +31,18 @@ public class TfIdfCalculator {
 	@Inject
 	private StopWords stopWords;
 
+
 	/**
-	 * Calculate tf id for company.
+	 * Calculate tf idf for company.
+	 *
+	 * @param companies the companies
+	 */
+	public void calculateTfIdfForCompany(List<Company> companies) {
+		companies.forEach(this::calculateTfIdfForCompany);
+	}
+
+	/**
+	 * Calculate tf idf for company.
 	 *
 	 * @param company the company
 	 */
