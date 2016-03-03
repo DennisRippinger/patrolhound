@@ -9,7 +9,13 @@ import java.util.*;
  */
 public class SortUtil {
 
-	// From http://stackoverflow.com/a/2581754/769114
+	/**
+	 * Sort by Value in ascending order.
+	 *
+	 * @param map an input map with compareable values.
+	 * @return A sorted LinkedHashMap.
+	 * @see http://stackoverflow.com/a/2581754/769114
+	 */
 	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
 		List<Map.Entry<K, V>> list =
 			new LinkedList<>(map.entrySet());

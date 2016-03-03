@@ -3,6 +3,8 @@ package de.drippinger.dto;
 import lombok.Data;
 
 /**
+ * The type Tag.
+ *
  * @author Dennis Rippinger
  */
 @Data

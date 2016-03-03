@@ -35,6 +35,9 @@ public class StopWords {
 	private UrlValidator urlValidator = UrlValidator.getInstance();
 
 
+	/**
+	 * Inits the class.
+	 */
 	@PostConstruct
 	public void init() {
 		stopWords = stopWordRepository.findAllStopWords();
@@ -43,6 +46,12 @@ public class StopWords {
 
 	}
 
+	/**
+	 * Is token applicable boolean.
+	 *
+	 * @param token the token
+	 * @return the boolean
+	 */
 	public boolean isTokenApplicable(String token) {
 
 		return token.length() > 1

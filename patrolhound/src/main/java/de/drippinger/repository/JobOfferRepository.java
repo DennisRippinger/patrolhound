@@ -12,6 +12,9 @@ import java.util.List;
 import static de.drippinger.generated.Tables.JOB_OFFER;
 
 
+/**
+ * The type Job offer repository.
+ */
 @Slf4j
 @Repository
 public class JobOfferRepository {
@@ -19,6 +22,11 @@ public class JobOfferRepository {
 	@Inject
 	private DSLContext jooq;
 
+	/**
+	 * Find all non obsolete list.
+	 *
+	 * @return the list
+	 */
 	public List<JobOffer> findAllNonObsolete() {
 		return jooq.select()
 			.from(JOB_OFFER)
@@ -26,6 +34,12 @@ public class JobOfferRepository {
 			.fetchInto(JobOffer.class);
 	}
 
+	/**
+	 * Find all non obsolete list.
+	 *
+	 * @param companyID the company id
+	 * @return the list
+	 */
 	public List<JobOffer> findAllNonObsolete(Long companyID) {
 		log.debug("Loading all non obsolete job offers from company {}", companyID);
 		return jooq.select()
@@ -37,12 +51,23 @@ public class JobOfferRepository {
 	}
 
 
+	/**
+	 * Make obsolete.
+	 *
+	 * @param jobOffer the job offer
+	 */
 	public void makeObsolete(JobOffer jobOffer) {
 		jooq.update(JOB_OFFER)
 			.set(JOB_OFFER.OBSOLETE, true)
 			.where(JOB_OFFER.ID.eq(jobOffer.getId()));
 	}
 
+	/**
+	 * Find all list.
+	 *
+	 * @param companyID the company id
+	 * @return the list
+	 */
 	public List<JobOffer> findAll(Long companyID) {
 		return jooq
 			.select()
@@ -51,6 +76,11 @@ public class JobOfferRepository {
 			.fetchInto(JobOffer.class);
 	}
 
+	/**
+	 * Save a job offer.
+	 *
+	 * @param jobOffer the job offer
+	 */
 	public void save(JobOffer jobOffer) {
 		JobOfferRecord jobOfferRecord = jooq.newRecord(JOB_OFFER, jobOffer);
 		jooq.executeInsert(jobOfferRecord);

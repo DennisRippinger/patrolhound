@@ -38,10 +38,18 @@ public class CompanyAction implements Serializable {
 	@Setter
 	private Company company;
 
+	/**
+	 * Load companies list.
+	 *
+	 * @return the list of all companies.
+	 */
 	public List<Company> loadCompanies() {
 		return companyRepository.findAll();
 	}
 
+	/**
+	 * Loads the current company.
+	 */
 	public void loadCurrentCompany() {
 		if (customerID != null) {
 			company = companyRepository.find(customerID);
@@ -52,18 +60,29 @@ public class CompanyAction implements Serializable {
 		company = new Company();
 	}
 
+	/**
+	 * Counts the number of offers for a given company.
+	 *
+	 * @param companyID the company id
+	 * @return the number of open job offers.
+	 */
 	public int countOffers(Long companyID) {
 		return companyRepository.countOpenJobOffersForCompany(companyID);
 	}
 
+	/**
+	 * Delete a company.
+	 */
 	public void deleteCompany() {
 		log.info("Delete {}", company.getName());
 
 		companyRepository.delete(company);
 	}
 
+	/**
+	 * Save a company.
+	 */
 	public void saveCompany() {
-
 		companyRepository.save(company);
 	}
 

@@ -15,6 +15,9 @@ import java.util.Map;
 import static de.drippinger.generated.Tables.*;
 
 
+/**
+ * The type Company repository.
+ */
 @Repository
 public class CompanyRepository {
 
@@ -22,6 +25,11 @@ public class CompanyRepository {
 	private DSLContext jooq;
 
 
+	/**
+	 * Find all list.
+	 *
+	 * @return the list
+	 */
 	public List<Company> findAll() {
 
 		return jooq
@@ -32,6 +40,12 @@ public class CompanyRepository {
 			.fetchInto(Company.class);
 	}
 
+	/**
+	 * Find company.
+	 *
+	 * @param companyID the company id
+	 * @return the company
+	 */
 	public Company find(Long companyID) {
 		return jooq
 			.select()
@@ -40,6 +54,12 @@ public class CompanyRepository {
 			.fetchOneInto(Company.class);
 	}
 
+	/**
+	 * Count open job offers for company integer.
+	 *
+	 * @param companyID the company id
+	 * @return the integer
+	 */
 	public Integer countOpenJobOffersForCompany(Long companyID) {
 		return jooq
 			.selectCount()
@@ -49,6 +69,12 @@ public class CompanyRepository {
 			.fetchOne(0, int.class);
 	}
 
+	/**
+	 * Fetch tags for company list.
+	 *
+	 * @param company the company
+	 * @return the list
+	 */
 	public List<String> fetchTagsForCompany(Company company) {
 
 		return jooq.select(TAG.TAG_FIELD)
@@ -60,6 +86,13 @@ public class CompanyRepository {
 			.getValues(TAG.TAG_FIELD);
 	}
 
+	/**
+	 * Insert tags.
+	 *
+	 * @param tags     the tags
+	 * @param company  the company
+	 * @param jobOffer the job offer
+	 */
 	public void insertTags(Map<String, Double> tags, Company company, JobOffer jobOffer) {
 
 		for (Map.Entry<String, Double> tagEntry : tags.entrySet()) {
@@ -76,6 +109,11 @@ public class CompanyRepository {
 		}
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param company the company
+	 */
 	public void delete(Company company) {
 		jooq
 			.deleteFrom(COMPANY)
@@ -83,6 +121,11 @@ public class CompanyRepository {
 			.execute();
 	}
 
+	/**
+	 * Update last update time stamp.
+	 *
+	 * @param company the company
+	 */
 	public void updateLastUpdateTimeStamp(Company company) {
 		jooq
 			.update(COMPANY)
@@ -91,12 +134,22 @@ public class CompanyRepository {
 			.execute();
 	}
 
+	/**
+	 * Updates a company.
+	 *
+	 * @param company the company
+	 */
 	public void update(Company company) {
 		CompanyRecord companyRecord = jooq.newRecord(COMPANY, company);
 
 		jooq.executeUpdate(companyRecord);
 	}
 
+	/**
+	 * Save a company.
+	 *
+	 * @param company the company
+	 */
 	public void save(Company company) {
 		if (company.getId() != null) {
 			update(company);

@@ -10,8 +10,8 @@ import de.drippinger.dto.JobOffer;
 import de.drippinger.exception.CrawlerException;
 import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
+import de.drippinger.util.Similarity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -20,6 +20,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Monster.de crawler.
+ */
 @Slf4j
 @Service
 public class MonsterCrawler extends JobCrawler {
@@ -49,7 +52,7 @@ public class MonsterCrawler extends JobCrawler {
 		for (Company company : companies) {
 			Integer counter = 1;
 
-			String monsterUrl = getURL(MONSTER_URL, company.getName(), counter++);
+			String monsterUrl = createURL(MONSTER_URL, company.getName(), counter++);
 			HtmlPage monsterPage;
 
 			Boolean hasChanges = false;
@@ -59,7 +62,7 @@ public class MonsterCrawler extends JobCrawler {
 				hasChanges |= extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
 
 				while (hasNext(monsterPage)) {
-					monsterUrl = getURL(MONSTER_URL, company.getName(), counter++);
+					monsterUrl = createURL(MONSTER_URL, company.getName(), counter++);
 					monsterPage = CrawlerUtil.getWebPage(webClient, monsterUrl, 0);
 
 					hasChanges |= extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
@@ -115,7 +118,7 @@ public class MonsterCrawler extends JobCrawler {
 			jobOffer.setJobAnnouncementTime(jobAnnouncementTime);
 			jobOffer.setObsolete(false);
 
-			Boolean isKnown = isKnown(jobOffers, knownJobOffers, jobOffer);
+			Boolean isKnown = Similarity.isKnown(jobOffers, knownJobOffers, jobOffer);
 
 			if (!isKnown) {
 
@@ -135,18 +138,6 @@ public class MonsterCrawler extends JobCrawler {
 		monsterJobPageCrawler.crawlJobOffer(jobOffer, webClient);
 	}
 
-	private Boolean isKnown(List<JobOffer> jobOffers, List<JobOffer> knownJobs, JobOffer currentJob) {
-		for (JobOffer jobOffer : jobOffers) {
-			if (jobOffer.getJobIdHash() == currentJob.getJobIdHash()) {
-				knownJobs.add(jobOffer);
-				return true;
-				// TODO Evaluate usefulness later
-			} else if (StringUtils.getLevenshteinDistance(jobOffer.getJobId(), currentJob.getJobId()) < 2) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	private Instant getJobAnnouncementTime(DomElement divJobOffer) {
 		DomElement domAnnouncementTime = divJobOffer.getFirstByXPath(".//div[@class='fnt20']");

@@ -15,6 +15,9 @@ import java.io.StringReader;
 import java.util.*;
 
 
+/**
+ * The type Tf idf calculator.
+ */
 @Slf4j
 @Service
 public class TfIdfCalculator {
@@ -28,7 +31,12 @@ public class TfIdfCalculator {
 	@Inject
 	private StopWords stopWords;
 
-	public void calculateTfIDForCompany(Company company) {
+	/**
+	 * Calculate tf id for company.
+	 *
+	 * @param company the company
+	 */
+	public void calculateTfIdfForCompany(Company company) {
 		List<JobOffer> jobOfferList = jobOfferRepository.findAll(company.getId());
 
 		Map<String, Integer> wordInDocumentMap = new HashMap<>();

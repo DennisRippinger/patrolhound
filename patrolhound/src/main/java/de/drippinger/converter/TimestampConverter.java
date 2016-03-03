@@ -10,6 +10,9 @@ import java.time.Instant;
 import java.util.Date;
 
 
+/**
+ * The type Timestamp converter.
+ */
 @FacesConverter(forClass = Instant.class)
 public class TimestampConverter implements Converter {
 

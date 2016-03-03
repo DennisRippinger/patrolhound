@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * OverviewAction
+ * The type Overview action.
  *
  * @author Dennis Rippinger
  */
@@ -47,6 +47,11 @@ public class OverviewAction implements Serializable {
 	@Setter
 	private Long companyID;
 
+	/**
+	 * Load job offers list.
+	 *
+	 * @return the list
+	 */
 	public List<JobOffer> loadJobOffers() {
 		if (jobOfferList == null) {
 			jobOfferList = jobOfferRepository.findAllNonObsolete(companyID);
@@ -56,10 +61,20 @@ public class OverviewAction implements Serializable {
 		return jobOfferList;
 	}
 
+	/**
+	 * Gets company currently loaded.
+	 *
+	 * @return the company
+	 */
 	public Company getCompany() {
 		return companyRepository.find(companyID);
 	}
 
+	/**
+	 * Load summary map.
+	 *
+	 * @return the map
+	 */
 	public Map<String, Double> loadSummary() {
 		if (summary == null) {
 			Map<String, Integer> tmpResult = new LinkedHashMap();

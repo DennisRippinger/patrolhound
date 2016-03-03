@@ -42,6 +42,13 @@ public final class CrawlerUtil {
 
 	}
 
+	/**
+	 * Gets random desktop web client.
+	 *
+	 * @param javascript the javascript
+	 * @param css        the css
+	 * @return the random desktop web client
+	 */
 	public static WebClient getRandomDesktopWebClient(Boolean javascript, Boolean css) {
 		BrowserVersion browserVersion = browserVersionDesktop.get(ThreadLocalRandom.current().nextInt(0, 2));
 		log.info("Creating new '{}' Browser.", browserVersion.getApplicationVersion());
@@ -52,6 +59,15 @@ public final class CrawlerUtil {
 		return webClient;
 	}
 
+	/**
+	 * Gets web page.
+	 *
+	 * @param client the client
+	 * @param url    the url
+	 * @param wait   the wait
+	 * @return the web page
+	 * @throws CrawlerException the crawler exception
+	 */
 	public static HtmlPage getWebPage(WebClient client, String url, Integer wait) throws CrawlerException {
 		HtmlPage page;
 		try {
@@ -73,6 +89,12 @@ public final class CrawlerUtil {
 		return page;
 	}
 
+	/**
+	 * Extract positive numbers from string list.
+	 *
+	 * @param input the input
+	 * @return the list
+	 */
 	public static List<Integer> extractPositiveNumbersFromString(String input) {
 		List<Integer> result = new LinkedList<>();
 		Pattern p = Pattern.compile("\\d+");
@@ -85,6 +107,11 @@ public final class CrawlerUtil {
 		return result;
 	}
 
+	/**
+	 * Wait around time in seconds.
+	 *
+	 * @param second the second
+	 */
 	public static void waitAroundTimeInSeconds(Integer second) {
 		Double dSecond = second * 1.0;
 		NormalDistribution distribution = new NormalDistribution(dSecond, 0.3);

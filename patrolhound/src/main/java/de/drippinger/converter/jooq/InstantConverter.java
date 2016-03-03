@@ -5,6 +5,9 @@ import org.jooq.Converter;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+/**
+ * The type Instant converter.
+ */
 public class InstantConverter implements Converter<Timestamp, Instant> {
 
 
@@ -34,4 +37,5 @@ public class InstantConverter implements Converter<Timestamp, Instant> {
 	public Class<Instant> toType() {
 		return Instant.class;
 	}
+
 }

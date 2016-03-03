@@ -6,6 +6,9 @@ import org.springframework.beans.factory.config.Scope;
 import javax.faces.context.FacesContext;
 import java.util.Map;
 
+/**
+ * The type View scope.
+ */
 public class ViewScope implements Scope {
 
 	public Object get(String name, ObjectFactory objectFactory) {

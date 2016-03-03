@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.List;
 
 /**
+ * The type Company.
+ *
  * @author Dennis Rippinger
  */
 @Data

@@ -20,6 +20,11 @@ public class StopWordRepository {
 	@Inject
 	private DSLContext jooq;
 
+	/**
+	 * Find all stop words set.
+	 *
+	 * @return the set
+	 */
 	public Set<String> findAllStopWords() {
 		return jooq
 			.select(SW_STOPWORD.STOPWORD.lower())
@@ -28,6 +33,11 @@ public class StopWordRepository {
 			.intoSet(0, String.class);
 	}
 
+	/**
+	 * Find all regex list.
+	 *
+	 * @return the list
+	 */
 	public List<String> findAllRegex() {
 		return jooq
 			.select(SW_REGEX.REGEX)
@@ -35,6 +45,11 @@ public class StopWordRepository {
 			.fetchInto(String.class);
 	}
 
+	/**
+	 * Find all locations set.
+	 *
+	 * @return the set
+	 */
 	public Set<String> findAllLocations() {
 		return jooq
 			.select(SW_LOCATIONS.LOCATION.lower())
