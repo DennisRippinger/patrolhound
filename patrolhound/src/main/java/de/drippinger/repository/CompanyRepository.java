@@ -70,23 +70,6 @@ public class CompanyRepository {
 	}
 
 	/**
-	 * Fetch tags for company list.
-	 *
-	 * @param company the company
-	 * @return the list
-	 */
-	public List<String> fetchTagsForCompany(Company company) {
-
-		return jooq.select(TAG.TAG_FIELD)
-			.from(TAG)
-			.join(TAG_FK)
-			.on(TAG.ID.eq(TAG_FK.TAG_ID))
-			.where(TAG_FK.COMPANY_ID.eq(company.getId()))
-			.fetch()
-			.getValues(TAG.TAG_FIELD);
-	}
-
-	/**
 	 * Insert tags.
 	 *
 	 * @param tags     the tags
