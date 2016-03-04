@@ -12,11 +12,15 @@ import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.JobOfferRepository;
 import de.drippinger.util.Similarity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +29,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@Scope("prototype")
 public class MonsterCrawler extends JobCrawler {
 
-	private static final String MONSTER_URL = "http://jobsuche.monster.de/Jobs/IT-Informationstechnologie_4?q=\"{0}\"&pg={1}";
+	private static final String MONSTER_URL = "http://jobs.monster.de/c-{0}-q-it-jobs.aspx?page={1}";
 
 	@Inject
 	private JobOfferRepository jobOfferRepository;
@@ -37,6 +42,10 @@ public class MonsterCrawler extends JobCrawler {
 
 	private MonsterJobPageCrawler monsterJobPageCrawler;
 
+	private List<JobOffer> currentJobOffers = new ArrayList<>();
+
+	private List<JobOffer> knownJobOffers;
+
 	@Override
 	public void crawlJobs(List<Company> companies, String keyword) {
 
@@ -44,8 +53,7 @@ public class MonsterCrawler extends JobCrawler {
 
 		monsterJobPageCrawler = new MonsterJobPageCrawler();
 
-		List<JobOffer> jobOffers = jobOfferRepository.findAllNonObsolete();
-		List<JobOffer> knownJobOffers = new ArrayList<>();
+		knownJobOffers = jobOfferRepository.findAllNonObsolete();
 
 		WebClient webClient = CrawlerUtil.getRandomDesktopWebClient(false, false);
 
@@ -59,13 +67,13 @@ public class MonsterCrawler extends JobCrawler {
 
 			try {
 				monsterPage = CrawlerUtil.getWebPage(webClient, monsterUrl, 0);
-				hasChanges |= extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
+				hasChanges |= extractJobOffers(monsterPage, company, webClient);
 
 				while (hasNext(monsterPage)) {
 					monsterUrl = createURL(MONSTER_URL, company.getName(), counter++);
 					monsterPage = CrawlerUtil.getWebPage(webClient, monsterUrl, 0);
 
-					hasChanges |= extractJobOffers(jobOffers, knownJobOffers, monsterPage, company, webClient);
+					hasChanges |= extractJobOffers(monsterPage, company, webClient);
 				}
 
 			} catch (CrawlerException e) {
@@ -78,22 +86,25 @@ public class MonsterCrawler extends JobCrawler {
 
 		}
 
-		// Uncheck no longer listed job offers
-		jobOffers.removeAll(knownJobOffers);
-		jobOffers.forEach(jobOfferRepository::makeObsolete);
+		markKnownJobsAsObsolete();
+	}
 
-		log.info("Unchecked {} no longer listed jobs", jobOffers.size());
+	private void markKnownJobsAsObsolete() {
+		this.knownJobOffers.removeAll(currentJobOffers);
+		jobOfferRepository.makeObsolete(this.knownJobOffers);
+
+		log.info("Unchecked {} no longer listed jobs", knownJobOffers.size());
 	}
 
 	private boolean hasNext(HtmlPage monsterPage) {
-		DomElement domNextPage = monsterPage.getFirstByXPath("//*[@id='page_navigation']/div/span[@class='nextLink fnt13']");
-		DomElement pageNavigation = monsterPage.getFirstByXPath("//*[@id='page_navigation']");
+		DomElement domNextPage = monsterPage.getFirstByXPath("//*[@class='page-link next']");
+		DomElement pageNavigation = monsterPage.getFirstByXPath("//div[@class='pagingWrapper']/div");
 
 		return pageNavigation != null && domNextPage == null;
 	}
 
-	private Boolean extractJobOffers(List<JobOffer> jobOffers, List<JobOffer> knownJobOffers, HtmlPage monsterPage, Company company, WebClient webClient) {
-		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//*[@class='jobTitleCol fnt4']");
+	private Boolean extractJobOffers(HtmlPage monsterPage, Company company, WebClient webClient) {
+		List<DomElement> divJobOffers = (List<DomElement>) monsterPage.getByXPath("//section[@id='resultsWrapper']//article[@itemtype='http://schema.org/JobPosting']");
 
 		Boolean hasChanges = false;
 
@@ -104,21 +115,23 @@ public class MonsterCrawler extends JobCrawler {
 				continue;
 			}
 
-			String jobID = getJobID(divJobOffer);
 			String jobTitle = getJobTitle(divJobOffer);
 			String jobURL = getJobURL(divJobOffer);
+			String jobLocation = getJobLocation(divJobOffer);
 			Instant jobAnnouncementTime = getJobAnnouncementTime(divJobOffer);
 
 			JobOffer jobOffer = new JobOffer();
-			jobOffer.setJobId(jobID);
 			jobOffer.setCompanyId(company.getId());
 			jobOffer.setJobTitle(jobTitle);
 			jobOffer.setJobUrl(jobURL);
+			jobOffer.setJobLocation(jobLocation);
 			jobOffer.setCompanyName(companyName);
 			jobOffer.setJobAnnouncementTime(jobAnnouncementTime);
 			jobOffer.setObsolete(false);
 
-			Boolean isKnown = Similarity.isKnown(jobOffers, knownJobOffers, jobOffer);
+			currentJobOffers.add(jobOffer);
+
+			Boolean isKnown = Similarity.isKnown(knownJobOffers, jobOffer);
 
 			if (!isKnown) {
 
@@ -136,64 +149,52 @@ public class MonsterCrawler extends JobCrawler {
 		return hasChanges;
 	}
 
+	private String getJobLocation(DomElement divJobOffer) {
+		DomElement domLocation = divJobOffer.getFirstByXPath(".//span[@itemprop='address']");
+		if (domLocation != null) {
+			return StringUtils.trim(domLocation.getTextContent());
+		}
+		return StringUtils.EMPTY;
+	}
+
 	private void getJobDescription(JobOffer jobOffer, WebClient webClient) {
 		monsterJobPageCrawler.crawlJobOffer(jobOffer, webClient);
 	}
 
 
 	private Instant getJobAnnouncementTime(DomElement divJobOffer) {
-		DomElement domAnnouncementTime = divJobOffer.getFirstByXPath(".//div[@class='fnt20']");
-		String announcementTime = domAnnouncementTime.asText();
-		if (announcementTime.contains("Heute")) {
-			return Instant.now();
-		} else if (announcementTime.contains("Tagen")) {
-			return extractTimeDifference(announcementTime, ChronoUnit.DAYS);
-		} else if (announcementTime.contains("Wochen")) {
-			return extractTimeDifference(announcementTime, ChronoUnit.WEEKS);
-		} else {
-			// Unknown Case, but hey, it's a crawler. Strange things can happen.
-			return Instant.now();
-		}
-	}
+		DomElement domAnnouncementTime = divJobOffer.getFirstByXPath(".//*[@itemprop='datePosted']");
+		String announcementTime = domAnnouncementTime.getAttribute("datetime");
+		TemporalAccessor time = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault()).parse(announcementTime);
 
-	private Instant extractTimeDifference(String announcementTime, ChronoUnit timeUnit) {
-		List<Integer> result = CrawlerUtil.extractPositiveNumbersFromString(announcementTime);
-		if (!result.isEmpty()) {
-			Integer daysMinus = result.get(0);
-			return Instant.now().minus(daysMinus, timeUnit);
-		}
-
-		return Instant.now();
+		return Instant.from(time);
 	}
 
 	private String getCompanyName(DomElement divJobOffer) {
-		DomElement domCompanyName = divJobOffer.getFirstByXPath(".//div[@class='companyContainer']/div/a[2]");
-		return domCompanyName.getAttribute("title");
+		DomElement domCompanyName = divJobOffer.getFirstByXPath(".//div[@itemscope='http://schema.org/Organization']/a");
+		if (domCompanyName != null) {
+			return domCompanyName.getAttribute("title");
+		} else {
+			domCompanyName = divJobOffer.getFirstByXPath(".//*[@itemprop='name']");
+			String companyName = domCompanyName.getTextContent();
+			return companyName.replace("Gefunden bei: ", "");
+		}
 	}
 
 	private String getJobTitle(DomElement divJobOffer) {
-		DomElement domJobTitle = divJobOffer.getFirstByXPath(".//div[@class='jobTitleContainer']/a");
+		DomElement domJobTitle = divJobOffer.getFirstByXPath(".//*[@itemprop='title']");
 
 		return domJobTitle.asText();
 	}
 
 	private String getJobURL(DomElement divJobOffer) {
-		DomElement domJobTitle = divJobOffer.getFirstByXPath(".//div[@class='jobTitleContainer']/a");
+		DomElement domJobTitle = divJobOffer.getFirstByXPath(".//h2/a");
 
 		// The URL comes with some type of referral, we remove that by splitting the URL into path and attributes.
 		String href = domJobTitle.getAttribute("href");
 		String[] url = href.split("\\?");
 
 		return url[0];
-	}
-
-	private String getJobID(DomElement divJobOffer) {
-		DomElement domJobID = divJobOffer.getFirstByXPath(".//div[@class='jobTitleContainer']/a");
-		String jobURL = domJobID.getAttribute("href");
-		jobURL = jobURL.replace("http://stellenanzeige.monster.de:80/", "");
-		String[] splitJobID = jobURL.split("\\?");
-
-		return splitJobID[0];
 	}
 
 }

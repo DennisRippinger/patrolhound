@@ -19,13 +19,11 @@ public class JobOffer {
 
 	private Long companyId;
 
-	private String jobId;
-
-	private Integer jobIdHash;
-
 	private String jobUrl;
 
 	private String jobTitle;
+
+	private String jobLocation;
 
 	private String companyName;
 
@@ -36,17 +34,6 @@ public class JobOffer {
 	private Boolean obsolete;
 
 	private List<String> tags;
-
-
-	/**
-	 * Sets job id.
-	 *
-	 * @param jobId the job id
-	 */
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
-		this.jobIdHash = jobId.hashCode();
-	}
 
 	/**
 	 * Add a new tag.

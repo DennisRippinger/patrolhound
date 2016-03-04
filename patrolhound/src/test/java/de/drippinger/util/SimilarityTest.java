@@ -7,20 +7,20 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Similarity Tester.
  */
 public class SimilarityTest {
 
 	private List<JobOffer> jobOffers = new ArrayList<>();
-	private List<JobOffer> knownJobs = new ArrayList<>();
 	private JobOffer currentJob;
 
 	@Before
 	public void before() throws Exception {
 		jobOffers.addAll(createSyntheticJobOffer(0, 10));
-		knownJobs.addAll(createSyntheticJobOffer(0, 10));
-		currentJob = createSingleSyntheticJobOffer(11);
+		currentJob = createSingleSyntheticJobOffer(10);
 	}
 
 	/**
@@ -28,9 +28,9 @@ public class SimilarityTest {
 	 */
 	@Test
 	public void testIsKnown() throws Exception {
-		Boolean known = Similarity.isKnown(jobOffers, knownJobs, currentJob);
+		Boolean known = Similarity.isKnown(jobOffers, currentJob);
 
-		System.out.println(known);
+		assertThat(known).isTrue();
 	}
 
 	private List<JobOffer> createSyntheticJobOffer(Integer idFrom, Integer idTo) {
@@ -46,7 +46,7 @@ public class SimilarityTest {
 
 	private JobOffer createSingleSyntheticJobOffer(Integer i) {
 		JobOffer offer = new JobOffer();
-		offer.setJobId(String.format("Systemadministrator-in-Teilzeit-m-w--1000000%s.aspx", i));
+		offer.setJobUrl(String.format("Systemadministrator-in-Teilzeit-m-w--1000000%s.aspx", i));
 
 		return offer;
 	}

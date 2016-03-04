@@ -6,6 +6,7 @@ import de.drippinger.repository.CompanyRepository;
 import de.drippinger.repository.TagRepository;
 import de.drippinger.util.TfIdfCalculator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ import java.util.List;
 public class CrawlerJob {
 
 	@Inject
-	private transient MonsterCrawler monsterCrawler;
+	private ApplicationContext applicationContext;
 
 	@Inject
 	private transient TfIdfCalculator tfIdfCalculator;
@@ -30,6 +31,9 @@ public class CrawlerJob {
 
 	@Scheduled(cron = "0 0 4 ? * MON-FRI")
 	public void execute() {
+
+		// It's a prototype
+		MonsterCrawler monsterCrawler = applicationContext.getBean(MonsterCrawler.class);
 
 		log.info("Started Crawling Job");
 

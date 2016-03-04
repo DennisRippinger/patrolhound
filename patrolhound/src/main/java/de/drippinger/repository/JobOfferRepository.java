@@ -54,12 +54,19 @@ public class JobOfferRepository {
 	/**
 	 * Make obsolete.
 	 *
-	 * @param jobOffer the job offer
+	 * @param jobOffers the job offers
 	 */
-	public void makeObsolete(JobOffer jobOffer) {
-		jooq.update(JOB_OFFER)
-			.set(JOB_OFFER.OBSOLETE, true)
-			.where(JOB_OFFER.ID.eq(jobOffer.getId()));
+	public void makeObsolete(List<JobOffer> jobOffers) {
+
+		for (JobOffer jobOffer : jobOffers) {
+			jooq
+				.update(JOB_OFFER)
+				.set(JOB_OFFER.OBSOLETE, true)
+				.where(JOB_OFFER.ID.eq(jobOffer.getId()))
+				.execute();
+		}
+
+
 	}
 
 	/**
